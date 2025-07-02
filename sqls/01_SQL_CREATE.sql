@@ -1,3 +1,4 @@
+﻿SET NAMES 'utf8mb4';
 SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0;
 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0;
 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION';
@@ -11,7 +12,7 @@ USE `ong` ;
 -- -----------------------------------------------------
 -- Table `ong`.`Doador`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `ong`.`Doador` (
+CREATE TABLE IF NOT EXISTS `ong`.`doador` (
   `ID_Doador` INT NOT NULL,
   `CPF` VARCHAR(11),
   `CNPJ` VARCHAR(14),
@@ -23,7 +24,7 @@ ENGINE = InnoDB;
 -- -----------------------------------------------------
 -- Table `ong`.`Doacao`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `ong`.`Doacao` (
+CREATE TABLE IF NOT EXISTS `ong`.`doacao` (
   `ID_Doacao` INT NOT NULL,
   `Data` DATE NOT NULL,
   `Doador` INT)
@@ -33,7 +34,7 @@ ENGINE = InnoDB;
 -- -----------------------------------------------------
 -- Table `ong`.`Entrega`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `ong`.`Entrega` (
+CREATE TABLE IF NOT EXISTS `ong`.`entrega` (
   `ID_Entrega` INT NOT NULL,
   `Data_Entrega` DATE NOT NULL,
   `Evento` INT,
@@ -44,7 +45,7 @@ ENGINE = InnoDB;
 -- -----------------------------------------------------
 -- Table `ong`.`Evento`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `ong`.`Evento` (
+CREATE TABLE IF NOT EXISTS `ong`.`evento` (
   `ID_Evento` INT NOT NULL,
   `Local` VARCHAR(45) NOT NULL,
   `Data` DATE NOT NULL)
@@ -54,7 +55,7 @@ ENGINE = InnoDB;
 -- -----------------------------------------------------
 -- Table `ong`.`Instituicao`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `ong`.`Instituicao` (
+CREATE TABLE IF NOT EXISTS `ong`.`instituicao` (
   `CNPJ` VARCHAR(14) NOT NULL,
   `Nome` VARCHAR(45) NOT NULL,
   `Endereço` VARCHAR(45) NOT NULL)
@@ -64,7 +65,7 @@ ENGINE = InnoDB;
 -- -----------------------------------------------------
 -- Table `ong`.`Item`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `ong`.`Item` (
+CREATE TABLE IF NOT EXISTS `ong`.`item` (
   `ID_Item` INT NOT NULL,
   `Nome_Item` VARCHAR(45) NOT NULL,
   `Tipo_Item` VARCHAR(20) NOT NULL,
@@ -75,7 +76,7 @@ ENGINE = InnoDB;
 -- -----------------------------------------------------
 -- Table `ong`.`Item_Da_Entrega`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `ong`.`Item_Da_Entrega` (
+CREATE TABLE IF NOT EXISTS `ong`.`item_da_entrega` (
   `ID_Item` INT NOT NULL,
   `ID_Entrega` INT NOT NULL,
   `Quantidade` INT NULL)
@@ -85,7 +86,7 @@ ENGINE = InnoDB;
 -- -----------------------------------------------------
 -- Table `ong`.`Item_Doado`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `ong`.`Item_Doado` (
+CREATE TABLE IF NOT EXISTS `ong`.`item_doado` (
   `ID_Item` INT NOT NULL,
   `ID_Doacao` INT NOT NULL,
   `Quantidade` INT NOT NULL)
@@ -95,7 +96,7 @@ ENGINE = InnoDB;
 -- -----------------------------------------------------
 -- Table `ong`.`Receptor`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `ong`.`Receptor` (
+CREATE TABLE IF NOT EXISTS `ong`.`receptor` (
   `CPF` VARCHAR(11) NOT NULL,
   `Nome` VARCHAR(45) NOT NULL,
   `Endereço` VARCHAR(45) NOT NULL)
@@ -105,7 +106,7 @@ ENGINE = InnoDB;
 -- -----------------------------------------------------
 -- Table `ong`.`Voluntario`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `ong`.`Voluntario` (
+CREATE TABLE IF NOT EXISTS `ong`.`voluntario` (
   `CPF` VARCHAR(11) NOT NULL,
   `Nome` VARCHAR(45) NOT NULL,
   `Funcao` VARCHAR(20) NOT NULL,
