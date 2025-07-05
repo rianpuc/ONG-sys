@@ -13,9 +13,9 @@ INSERT INTO `receptor` (`CPF`, `Nome`, `Endereço`) VALUES
 ('55566677788', 'Maria Oliveira', 'Beco da Paz, 20'),
 ('99988877766', 'Carlos Souza', 'Travessa Alegria, 30');
 -- Inserindo Eventos de distribuição
-INSERT INTO `evento` (`ID_Evento`, `Local`, `Data`) VALUES
-(1, 'Praça da Matriz', '2025-07-15'),
-(2, 'Ginásio Municipal', '2025-08-20');
+INSERT INTO `evento` (`ID_Evento`, `Local`, `Data`, `Instituicao`) VALUES
+(1, 'Praça da Matriz', '2025-07-15', '32638826000177'),
+(2, 'Ginásio Municipal', '2025-08-20', '32638826000177');
 -- Inserindo Tipos de Itens que a ONG armazena
 INSERT INTO `item` (`ID_Item`, `Nome_Item`, `Tipo_Item`, `Quantidade_Atual`) VALUES
 (101, 'Arroz 1kg', 'Alimento', 150),
@@ -33,8 +33,8 @@ INSERT INTO `doador` (`ID_Doador`, `CPF`, `CNPJ`, `Nome_Doador`, `Tipo_Doador`) 
 (3, NULL, '01234567000199', 'Supermercado Preço Bom', 'Juridica');
 -- Inserindo Voluntarios
 INSERT INTO `voluntario` (`CPF`, `Nome`, `Funcao`, `Instituicao`) VALUES
-('33344455566', 'Fernanda Lima', 'Organizador', '11222333000144'),
-('77788899900', 'Lucas Martins', 'Motorista', '55666777000188');
+('33344455566', 'Fernanda Lima', 'Organizador', '32638826000177'),
+('77788899900', 'Lucas Martins', 'Motorista', '32638826000177');
 -- Inserindo registros de Doacao
 INSERT INTO `doacao` (`ID_Doacao`, `Data`, `Doador`) VALUES
 (1001, '2025-06-20', 1), -- Doacao de Ana Pereira

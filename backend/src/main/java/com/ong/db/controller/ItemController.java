@@ -1,4 +1,5 @@
 package com.ong.db.controller;
+
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -17,14 +18,17 @@ import com.ong.db.item.Item;
 public class ItemController {
     @Autowired
     private ItemRepository repository;
+
     @CrossOrigin(origins = "*", allowedHeaders = "*")
     @PostMapping
-    public void inserirItem(@RequestBody ItemRequestDTO data){
+    public void inserirItem(@RequestBody ItemRequestDTO data) {
         Item itemData = new Item(data);
         repository.save(itemData);
     }
+
+    @CrossOrigin(origins = "*", allowedHeaders = "*")
     @GetMapping
-    public List<ItemResponseDTO> getAll(){
+    public List<ItemResponseDTO> getAll() {
         List<ItemResponseDTO> itens = repository.findAll().stream().map(ItemResponseDTO::new).toList();
         return itens;
     }

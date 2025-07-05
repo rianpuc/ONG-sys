@@ -48,7 +48,8 @@ ENGINE = InnoDB;
 CREATE TABLE IF NOT EXISTS `ong`.`evento` (
   `ID_Evento` INT NOT NULL,
   `Local` VARCHAR(45) NOT NULL,
-  `Data` DATE NOT NULL)
+  `Data` DATE NOT NULL,
+  `Instituicao` VARCHAR(14) NOT NULL)
 ENGINE = InnoDB;
 
 
@@ -110,7 +111,7 @@ CREATE TABLE IF NOT EXISTS `ong`.`voluntario` (
   `CPF` VARCHAR(11) NOT NULL,
   `Nome` VARCHAR(45) NOT NULL,
   `Funcao` VARCHAR(20) NOT NULL,
-  `Instituicao` VARCHAR(14))
+  `Instituicao` VARCHAR(14) NOT NULL)
 ENGINE = InnoDB;
 
 
