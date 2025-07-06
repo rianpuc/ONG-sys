@@ -2,7 +2,7 @@ import { useMemo, useState } from "react";
 import Button from "../../components/button/Button";
 import Table from "../../components/table/Table";
 import useFetch from "../../hooks/useFetch";
-import type { Doacao } from "../../interface/Doacao";
+import type { Doacoes } from "../../interface/Doacoes";
 import type { DoacaoTable } from "../../interface/DoacaoTable";
 
 const columns = [
@@ -13,21 +13,17 @@ const columns = [
 ];
 
 const Doacao = () => {
-    const { data: doacoes, isLoading, error } = useFetch<Doacao[]>('/doacao');
+    const { data: doacoes, isLoading, error } = useFetch<Doacoes[]>('/doacao');
     const [selectedDoacao, setSelectedDoacao] = useState<DoacaoTable | null>(null);
     const handleRowClick = (doacao: DoacaoTable) => {
         setSelectedDoacao(doacao);
         console.log("Doacao selecionada:", doacao);
     };
     const dadosParaTabela = useMemo((): DoacaoTable[] => {
-        if (!doacoes) return []; // Se não houver doações, retorna um array vazio
-
-        // flatMap é perfeito para isso: ele mapeia e "achata" o resultado em um nível
+        if (!doacoes) return [];
         return doacoes.flatMap(doacao =>
-            // Para cada doação, mapeamos sua lista de itens
             doacao.itensDoados.map(item => ({
-                // E criamos um novo objeto "plano" para cada item
-                id: `${doacao.ID_Doacao}-${item.nomeItem}`, // Chave única para o React
+                id: `${doacao.ID_Doacao}-${item.ID_Item}`, // Chave única para o React
                 dataDaDoacao: doacao.Data,
                 nomeDoador: doacao.Doador?.Nome_Doador || 'N/A',
                 itemDoado: item.nomeItem,
