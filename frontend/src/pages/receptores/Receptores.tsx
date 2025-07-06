@@ -1,4 +1,3 @@
-import { useState } from "react";
 import useFetch from "../../hooks/useFetch";
 import type { Receptor } from "../../interface/Receptor";
 import Table from "../../components/table/Table";
@@ -13,9 +12,9 @@ const columns = [
 
 const Receptores = () => {
     const { data: receptores, isLoading, error } = useFetch<Receptor[]>('/receptor');
-    const [selectedReceptor, setSelectedReceptor] = useState<Receptor | null>(null);
+    // const [selectedReceptor, setSelectedReceptor] = useState<Receptor | null>(null);
     const handleRowClick = (receptor: Receptor) => {
-        setSelectedReceptor(receptor);
+        // setSelectedReceptor(receptor);
         console.log("Receptor selecionado: ", receptor);
     }
     let content;

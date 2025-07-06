@@ -1,4 +1,3 @@
-import { useState } from "react";
 import useFetch from "../../hooks/useFetch";
 import type { Evento } from "../../interface/Evento";
 import Table from "../../components/table/Table";
@@ -12,9 +11,9 @@ const columns = [
 
 const Eventos = () => {
     const { data: eventos, isLoading, error } = useFetch<Evento[]>('/evento');
-    const [selectedEvento, setSelectedEvento] = useState<Evento | null>(null);
+    // const [selectedEvento, setSelectedEvento] = useState<Evento | null>(null);
     const handleRowClick = (evento: Evento) => {
-        setSelectedEvento(evento);
+        // setSelectedEvento(evento);
         console.log("Evento selecionado: ", evento);
     };
     let content;

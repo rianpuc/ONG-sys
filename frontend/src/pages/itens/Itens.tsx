@@ -1,4 +1,3 @@
-import { useState } from "react";
 import Button from "../../components/button/Button";
 import Table from "../../components/table/Table";
 import useFetch from "../../hooks/useFetch";
@@ -12,9 +11,9 @@ const columns = [
 
 const Itens = () => {
     const { data: itens, isLoading, error } = useFetch<Item[]>('/item');
-    const [selectedItem, setSelectedItem] = useState<Item | null>(null);
+    // const [selectedItem, setSelectedItem] = useState<Item | null>(null);
     const handleRowClick = (item: Item) => {
-        setSelectedItem(item);
+        // setSelectedItem(item);
         console.log("Item selecionado:", item);
     };
     let content;

@@ -1,4 +1,3 @@
-import { useState } from "react";
 import useFetch from "../../hooks/useFetch";
 import type { Voluntario } from "../../interface/Voluntario";
 import Button from "../../components/button/Button";
@@ -14,9 +13,9 @@ const columns = [
 
 const Voluntarios = () => {
     const { data: voluntarios, isLoading, error } = useFetch<Voluntario[]>('/voluntario');
-    const [selectedVoluntario, setSelectedVoluntario] = useState<Voluntario | null>(null);
+    // const [selectedVoluntario, setSelectedVoluntario] = useState<Voluntario | null>(null);
     const handleRowClick = (voluntario: Voluntario) => {
-        setSelectedVoluntario(voluntario);
+        // setSelectedVoluntario(voluntario);
         console.log("Voluntario selecionado: ", voluntario);
     }
     let content;

@@ -1,4 +1,3 @@
-import { useState } from "react";
 import useFetch from "../../hooks/useFetch";
 import type { Doador } from "../../interface/Doador";
 import Table from "../../components/table/Table";
@@ -18,9 +17,9 @@ const columns = [
 
 const Doadores = () => {
     const { data: doadores, isLoading, error } = useFetch<Doador[]>('/doador');
-    const [selectedDoador, setSelectedDoador] = useState<Doador | null>(null);
+    // const [selectedDoador, setSelectedDoador] = useState<Doador | null>(null);
     const handleRowClick = (doador: Doador) => {
-        setSelectedDoador(doador);
+        // setSelectedDoador(doador);
         console.log("Doador selecionado: ", doador);
     }
     let content;

@@ -1,5 +1,3 @@
-import React from 'react';
-import { Link } from 'react-router-dom'; // Importamos o Link para criar os "atalhos"
 import './Homepage.css'; // Vamos criar um CSS para estilizar a página
 import { Card } from '../../components/card/Card';
 

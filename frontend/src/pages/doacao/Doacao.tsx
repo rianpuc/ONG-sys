@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useMemo } from "react";
 import Button from "../../components/button/Button";
 import Table from "../../components/table/Table";
 import useFetch from "../../hooks/useFetch";
@@ -14,9 +14,9 @@ const columns = [
 
 const Doacao = () => {
     const { data: doacoes, isLoading, error } = useFetch<Doacoes[]>('/doacao');
-    const [selectedDoacao, setSelectedDoacao] = useState<DoacaoTable | null>(null);
+    // const [selectedDoacao, setSelectedDoacao] = useState<DoacaoTable | null>(null);
     const handleRowClick = (doacao: DoacaoTable) => {
-        setSelectedDoacao(doacao);
+        // setSelectedDoacao(doacao);
         console.log("Doacao selecionada:", doacao);
     };
     const dadosParaTabela = useMemo((): DoacaoTable[] => {

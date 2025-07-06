@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useMemo } from "react";
 import useFetch from "../../hooks/useFetch"
 import type { Entrega } from "../../interface/Entrega";
 import Table from "../../components/table/Table";
@@ -14,9 +14,9 @@ const columns = [
 ];
 const Entregas = () => {
     const { data: entregas, isLoading, error } = useFetch<Entrega[]>('/entrega');
-    const [selectedEntrega, setSelectedEntrega] = useState<EntregaTable | null>(null);
+    // const [selectedEntrega, setSelectedEntrega] = useState<EntregaTable | null>(null);
     const handleRowClick = (entrega: EntregaTable) => {
-        setSelectedEntrega(entrega);
+        // setSelectedEntrega(entrega);
         console.log("Entrega selecionada: ", entrega);
     }
     const dadosParaTabela = useMemo((): EntregaTable[] => {
