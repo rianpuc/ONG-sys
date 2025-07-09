@@ -21,15 +21,18 @@ const InsertDoacaoForm = ({ onSuccess, doadores, itens, onDoadorCreated, onItemC
 
     const [subModalAberto, setSubModalAberto] = useState<null | 'novoDoador' | 'novoItem'>(null);
     const [data, setData] = useState('');
+    const [reutilizar, setReutilizar] = useState('');
     const [doadorID, setDoadorID] = useState(0);
     const { execute: criarDoacao, isLoading, error } = useMutation('/doacao', 'POST');
     /* LOGICA PARA USAR CREATABLESELECT */
     const doadorOptions = doadores.map(d => ({ value: d.ID_Doador, label: d.Nome_Doador }));
     const itensOptions = itens.map(d => ({ value: d.ID_Item, label: d.Nome_Item }));
     const handleCreateDoador = (inputValue: string) => {
+        setReutilizar(inputValue);
         setSubModalAberto('novoDoador');
     }
     const handleCreateItem = (inputValue: string) => {
+        setReutilizar(inputValue);
         setSubModalAberto('novoItem');
     }
     const [itensDoados, setItensDoados] = useState<ItemDoado[]>([{
@@ -149,10 +152,10 @@ const InsertDoacaoForm = ({ onSuccess, doadores, itens, onDoadorCreated, onItemC
                 </div>
             </form>
             <Modal title="Cadastrar Novo Doador" isOpen={subModalAberto === 'novoDoador'} onClose={() => setSubModalAberto(null)}>
-                <InsertDoadoresForm onSuccess={() => { onDoadorCreated(); setSubModalAberto(null); }}></InsertDoadoresForm>
+                <InsertDoadoresForm name={reutilizar} onSuccess={() => { onDoadorCreated(); setSubModalAberto(null); }}></InsertDoadoresForm>
             </Modal>
             <Modal title="Cadastrar Novo Item" isOpen={subModalAberto === 'novoItem'} onClose={() => setSubModalAberto(null)}>
-                <InsertItensForm quantity={true} onSuccess={() => { onItemCreated(); setSubModalAberto(null); }}></InsertItensForm>
+                <InsertItensForm name={reutilizar} quantity={true} onSuccess={() => { onItemCreated(); setSubModalAberto(null); }}></InsertItensForm>
             </Modal>
 
         </>

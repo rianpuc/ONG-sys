@@ -4,11 +4,12 @@ import useMutation from '../../hooks/useMutation';
 // O formulário recebe a lista de instituições e uma função para fechar o modal no sucesso
 interface ItemFormProps {
     quantity?: boolean;
+    name?: string;
     onSuccess: () => void;
 }
 
-const InsertItensForm = ({ onSuccess, quantity }: ItemFormProps) => {
-    const [nome, setNome] = useState('');
+const InsertItensForm = ({ onSuccess, quantity, name }: ItemFormProps) => {
+    const [nome, setNome] = useState(name ? name : '');
     const [tipo, setTipo] = useState('');
     let lockedQuantity = quantity ? true : false;
     const [quantidade, setQuantidade] = useState(0);

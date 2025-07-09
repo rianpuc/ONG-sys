@@ -8,7 +8,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import com.ong.db.itemdoado.ItemDoadoRepository;
 import com.ong.db.itemdoado.ItemDoadoResponseDTO;
-import com.ong.db.itemdoado.ItemDoado;
 
 @RestController
 @RequestMapping("item_doado")

@@ -53,12 +53,12 @@ INSERT INTO `item_doado` (`ID_Item`, `ID_Doacao`, `Quantidade`) VALUES
 (101, 1002, 50), -- 50kg de Arroz
 (102, 1002, 50); -- 50kg de Feijão
 -- Entrega 2001 (para João da Silva)
-INSERT INTO `item_da_entrega` (`ID_Item`, `ID_Entrega`, `Quantidade`) VALUES
+INSERT INTO `item_entrega` (`ID_Item`, `ID_Entrega`, `Quantidade`) VALUES
 (101, 2001, 2), -- 2kg de Arroz
 (102, 2001, 2), -- 2kg de Feijão
 (103, 2001, 1); -- 1 Cobertor
 -- Entrega 2002 (para Maria Oliveira)
-INSERT INTO `item_da_entrega` (`ID_Item`, `ID_Entrega`, `Quantidade`) VALUES
+INSERT INTO `item_entrega` (`ID_Item`, `ID_Entrega`, `Quantidade`) VALUES
 (101, 2002, 2), -- 2kg de Arroz
 (102, 2002, 1), -- 1kg de Feijão
 (104, 2002, 1); -- 1 Jaqueta

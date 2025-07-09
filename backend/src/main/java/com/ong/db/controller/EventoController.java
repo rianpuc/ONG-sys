@@ -1,6 +1,5 @@
 package com.ong.db.controller;
 
-import java.sql.Date;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -18,9 +17,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import com.ong.db.evento.EventoResponseDTO;
 import com.ong.db.evento.EventoService;
-import com.ong.db.receptor.ReceptorRequestDTO;
-import com.ong.db.receptor.ReceptorResponseDTO;
-import com.ong.db.evento.EventoRepository;
 import com.ong.db.evento.EventoRequestDTO;
 
 @RestController

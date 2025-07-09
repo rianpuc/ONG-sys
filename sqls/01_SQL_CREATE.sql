@@ -40,7 +40,8 @@ CREATE TABLE IF NOT EXISTS `ong`.`entrega` (
   `ID_Entrega` INT NOT NULL,
   `Data_Entrega` DATE NOT NULL,
   `Evento` INT,
-  `Receptor` VARCHAR(11) NOT NULL)
+  `Receptor` VARCHAR(11) NOT NULL,
+  `Status` BOOLEAN NOT NULL DEFAULT TRUE)
 ENGINE = InnoDB;
 
 
@@ -79,12 +80,13 @@ ENGINE = InnoDB;
 
 
 -- -----------------------------------------------------
--- Table `ong`.`Item_Da_Entrega`
+-- Table `ong`.`Item_Entrega`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `ong`.`item_da_entrega` (
+CREATE TABLE IF NOT EXISTS `ong`.`item_entrega` (
   `ID_Item` INT NOT NULL,
   `ID_Entrega` INT NOT NULL,
-  `Quantidade` INT NULL)
+  `Quantidade` INT NULL,
+  `Status` BOOLEAN NOT NULL DEFAULT TRUE)
 ENGINE = InnoDB;
 
 

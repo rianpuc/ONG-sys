@@ -13,10 +13,12 @@ import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Entity
-@Table(name = "item_da_entrega")
+@Table(name = "item_entrega")
 @Getter
+@Setter
 @AllArgsConstructor
 @NoArgsConstructor
 public class ItemEntrega {
@@ -32,4 +34,6 @@ public class ItemEntrega {
     private Entrega ID_Entrega;
     @Column(name = "Quantidade")
     private int Quantidade;
+    @Column(name = "Status")
+    private boolean Status;
 }

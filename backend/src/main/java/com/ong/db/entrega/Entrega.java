@@ -1,6 +1,7 @@
 package com.ong.db.entrega;
 
-import java.sql.Date;
+import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
 import com.ong.db.itementrega.ItemEntrega;
@@ -11,19 +12,23 @@ import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Entity
 @Table(name = "entrega")
 @Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @EqualsAndHashCode(of = "ID_Entrega")
 public class Entrega {
     @Id
     @Column(name = "ID_Entrega")
-    private int ID_Entrega;
+    private Integer ID_Entrega;
     @Column(name = "Data_Entrega")
-    private Date Data_Entrega;
+    private LocalDate Data_Entrega;
+    @Column(name = "Status")
+    private boolean Status;
     @ManyToOne
     @JoinColumn(name = "Evento")
     private Evento Evento;
@@ -31,5 +36,6 @@ public class Entrega {
     @JoinColumn(name = "Receptor")
     private Receptor Receptor;
     @OneToMany(mappedBy = "ID_Entrega", fetch = FetchType.LAZY)
-    private List<ItemEntrega> itens;
+    private List<ItemEntrega> itens = new ArrayList<>();
+
 }
