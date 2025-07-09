@@ -21,6 +21,6 @@ public class Instituicao {
     private String CNPJ;
     @Column(name = "Nome")
     private String Nome;
-    @Column(name = "Endereço")
+    @Column(name = "Endereco")
     private String Endereco;
 }

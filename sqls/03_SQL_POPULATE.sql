@@ -5,17 +5,17 @@ SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,N
 
 USE `ong` ;
 -- Inserindo Instituições
-INSERT INTO `instituicao` (`CNPJ`, `Nome`, `Endereço`) VALUES
+INSERT INTO `instituicao` (`CNPJ`, `Nome`, `Endereco`) VALUES
 ('32638826000177', 'Somos do Bhem', 'R. Águas Vermelhas, 79 - Minaslandia');
 -- Inserindo Receptores (pessoas que recebem as doações)
-INSERT INTO `receptor` (`CPF`, `Nome`, `Endereço`) VALUES
+INSERT INTO `receptor` (`CPF`, `Nome`, `Endereco`) VALUES
 ('11122233344', 'João da Silva', 'Rua da Esperança, 10'),
 ('55566677788', 'Maria Oliveira', 'Beco da Paz, 20'),
 ('99988877766', 'Carlos Souza', 'Travessa Alegria, 30');
 -- Inserindo Eventos de distribuição
 INSERT INTO `evento` (`ID_Evento`, `Local`, `Data`, `Instituicao`) VALUES
-(1, 'Praça da Matriz', '2025-07-15', '32638826000177'),
-(2, 'Ginásio Municipal', '2025-08-20', '32638826000177');
+(1, 'Praca da Matriz', '2025-07-15', '32638826000177'),
+(2, 'Ginasio Municipal', '2025-08-20', '32638826000177');
 -- Inserindo Tipos de Itens que a ONG armazena
 INSERT INTO `item` (`ID_Item`, `Nome_Item`, `Tipo_Item`, `Quantidade_Atual`) VALUES
 (101, 'Arroz 1kg', 'Alimento', 150),

@@ -8,10 +8,12 @@ import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Entity
 @Table(name = "receptor")
 @Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @EqualsAndHashCode(of = "CPF")
@@ -21,6 +23,6 @@ public class Receptor {
     private String CPF;
     @Column(name = "Nome")
     private String Nome;
-    @Column(name = "Endereço")
+    @Column(name = "Endereco")
     private String Endereco;
 }

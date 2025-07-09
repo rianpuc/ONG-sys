@@ -17,7 +17,8 @@ CREATE TABLE IF NOT EXISTS `ong`.`doador` (
   `CPF` VARCHAR(11),
   `CNPJ` VARCHAR(14),
   `Nome_Doador` VARCHAR(45) NOT NULL,
-  `Tipo_Doador` VARCHAR(8) NOT NULL)
+  `Tipo_Doador` VARCHAR(8) NOT NULL,
+  `Ativo` BOOLEAN NOT NULL DEFAULT TRUE)
 ENGINE = InnoDB;
 
 
@@ -27,7 +28,8 @@ ENGINE = InnoDB;
 CREATE TABLE IF NOT EXISTS `ong`.`doacao` (
   `ID_Doacao` INT NOT NULL,
   `Data` DATE NOT NULL,
-  `Doador` INT)
+  `Doador` INT NOT NULL,
+  `Status` BOOLEAN NOT NULL DEFAULT TRUE)
 ENGINE = InnoDB;
 
 
@@ -49,7 +51,8 @@ CREATE TABLE IF NOT EXISTS `ong`.`evento` (
   `ID_Evento` INT NOT NULL,
   `Local` VARCHAR(45) NOT NULL,
   `Data` DATE NOT NULL,
-  `Instituicao` VARCHAR(14) NOT NULL)
+  `Instituicao` VARCHAR(14) NOT NULL,
+  `Status` BOOLEAN NOT NULL DEFAULT TRUE)
 ENGINE = InnoDB;
 
 
@@ -59,7 +62,7 @@ ENGINE = InnoDB;
 CREATE TABLE IF NOT EXISTS `ong`.`instituicao` (
   `CNPJ` VARCHAR(14) NOT NULL,
   `Nome` VARCHAR(45) NOT NULL,
-  `Endereço` VARCHAR(45) NOT NULL)
+  `Endereco` VARCHAR(45) NOT NULL)
 ENGINE = InnoDB;
 
 
@@ -70,7 +73,8 @@ CREATE TABLE IF NOT EXISTS `ong`.`item` (
   `ID_Item` INT NOT NULL,
   `Nome_Item` VARCHAR(45) NOT NULL,
   `Tipo_Item` VARCHAR(20) NOT NULL,
-  `Quantidade_Atual` INT NOT NULL)
+  `Quantidade_Atual` INT NOT NULL,
+  `Status` BOOLEAN NOT NULL DEFAULT TRUE)
 ENGINE = InnoDB;
 
 
@@ -90,7 +94,8 @@ ENGINE = InnoDB;
 CREATE TABLE IF NOT EXISTS `ong`.`item_doado` (
   `ID_Item` INT NOT NULL,
   `ID_Doacao` INT NOT NULL,
-  `Quantidade` INT NOT NULL)
+  `Quantidade` INT NOT NULL,
+  `Status` BOOLEAN NOT NULL DEFAULT TRUE)
 ENGINE = InnoDB;
 
 
@@ -100,7 +105,7 @@ ENGINE = InnoDB;
 CREATE TABLE IF NOT EXISTS `ong`.`receptor` (
   `CPF` VARCHAR(11) NOT NULL,
   `Nome` VARCHAR(45) NOT NULL,
-  `Endereço` VARCHAR(45) NOT NULL)
+  `Endereco` VARCHAR(45) NOT NULL)
 ENGINE = InnoDB;
 
 

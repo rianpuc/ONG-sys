@@ -8,9 +8,11 @@ interface TableProps<T> {
     data: T[];
     columns: Column<T>[];
     onRowClick?: (item: T) => void;
+    selectedItem?: T | null;
+    button?: boolean;
 }
 
-const Table = <T extends { [key: string]: any }>({ data, columns, onRowClick }: TableProps<T>) => {
+const Table = <T extends { [key: string]: any }>({ data, columns, onRowClick, selectedItem, button }: TableProps<T>) => {
     const keyAccessor = Object.keys(data[0] || {})[0] as keyof T;
     return (
         <div className="text-white">
@@ -22,18 +24,24 @@ const Table = <T extends { [key: string]: any }>({ data, columns, onRowClick }: 
                 ))}
             </div>
             <div className="flex flex-col gap-2">
-                {data.map((item, index) => (
-                    <div
-                        key={item[keyAccessor]}
-                        onClick={() => onRowClick && onRowClick(item)}
-                        className={`flex gap-2 p-4 rounded-md items-center transition duration-200 hover:scale-103 ${index % 2 === 0 ? 'bg-gray-600' : 'bg-gray-500'}`}>
-                        {columns.map((column) => (
-                            <div key={`${item[keyAccessor]}-${column.header}`} className="flex-1 text-center">
-                                {column.render ? column.render(item) : item[column.accessor!]}
-                            </div>
-                        ))}
-                    </div>
-                ))}
+                {data.map((item, index) => {
+                    const isSelected = selectedItem && item[keyAccessor] === selectedItem[keyAccessor];
+                    return (
+                        <div
+                            key={item[keyAccessor]}
+                            onClick={() => onRowClick && onRowClick(item)}
+                            className={`flex gap-2 p-4 rounded-md items-center transition-all duration-300 ease-out hover:scale-103 
+                        ${index % 2 === 0 ? 'bg-gray-600' : 'bg-gray-500'}
+                        ${onRowClick ? 'cursor-pointer hover:scale-103' : ''}
+                        ${isSelected ? 'bg-indigo-900' : 'scale-100'}`}>
+                            {columns.map((column) => (
+                                <div key={`${item[keyAccessor]}-${column.header}`} className="flex-1 text-center">
+                                    {column.render ? column.render(item) : item[column.accessor!]}
+                                </div>
+                            ))}
+                        </div>
+                    )
+                })}
             </div>
         </div>
     );

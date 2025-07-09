@@ -44,6 +44,7 @@ const Entregas = () => {
     }
     return (
         <>
+            <title>Entregas</title>
             <div className="flex flex-col items-center gap-6 p-8 bg-gray-900">
                 <h1 className="w-full bg-gray-300 text-black font-bold text-center text-lg py-3 px-6 rounded-full">
                     Entregas no Sistema: {dadosParaTabela?.length || 0}

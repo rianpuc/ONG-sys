@@ -12,3 +12,11 @@ export const formatIdentificacao = (documento: string, tipo: string): string => 
     }
     return formatCNPJ(documento);
 }
+
+export const formatarDataParaExibicao = (dataString: string | Date | null | undefined): string => {
+    if (!dataString) {
+        return 'Data não informada';
+    }
+    const dataCorrigida = new Date(dataString.toString().replace(/-/g, '\/'));
+    return dataCorrigida.toLocaleDateString('pt-BR');
+};
