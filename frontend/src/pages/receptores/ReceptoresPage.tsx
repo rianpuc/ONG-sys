@@ -17,7 +17,7 @@ const columns = [
     { header: 'Endereço', accessor: 'Endereco' as const }
 ];
 
-const Receptores = () => {
+const ReceptoresPage = () => {
     /* DECLARACAO USESTATES */
     const [modalAberto, setModalAberto] = useState<string | null>(null);
     const [selectedReceptor, setSelectedReceptor] = useState<Receptor | null>(null);
@@ -104,4 +104,4 @@ const Receptores = () => {
     )
 }
 
-export default Receptores;
+export default ReceptoresPage;

@@ -11,12 +11,11 @@ import type { Doador } from "../../interface/Doador";
 import type { Item } from "../../interface/Item";
 import { formatarDataParaExibicao } from "../../utils/Formatters";
 import InsertDoacaoForm from "./InsertDoacaoForm";
-import UpdateDoadoresForm from "../doadores/UpdateDoadoresForm";
 import UpdateDoacaoForm from "./UpdateDoacaoForm";
 import Lupa from "../../components/icons/Lupa";
 
 
-const Doacao = () => {
+const DoacaoPage = () => {
     /* DECLARACAO USESTATES */
     const [modalAberto, setModalAberto] = useState<string | null>(null);
     const [selectedDoacao, setSelectedDoacao] = useState<Doacao | null>(null);
@@ -150,4 +149,4 @@ const Doacao = () => {
     )
 }
 
-export default Doacao;
+export default DoacaoPage;

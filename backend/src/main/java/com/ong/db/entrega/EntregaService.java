@@ -60,6 +60,7 @@ public class EntregaService {
         if (igualA != null) {
             spec = spec.and(quantidadeIgualA(igualA));
         }
+        spec = spec.and(isAtivo(true));
         List<EntregaResponseDTO> entregas = entregaRepository.findAll(spec).stream().map(EntregaResponseDTO::new)
                 .toList();
         return entregas;
@@ -75,6 +76,7 @@ public class EntregaService {
                 .orElseThrow(() -> new RuntimeException("Evento nao encontrado!"));
         novaEntrega.setEvento(evento);
         novaEntrega.setData_Entrega(dados.Data());
+        novaEntrega.setStatus(true);
         Entrega entregaSalva = entregaRepository.save(novaEntrega);
         for (ItemEntregaRequestDTO itemDTO : dados.itensEntregues()) {
             Item item = itemRepository.findById(itemDTO.ID_Item())
@@ -89,6 +91,7 @@ public class EntregaService {
             itemEntrega.setID_Entrega(entregaSalva);
             itemEntrega.setID_Item(item);
             itemEntrega.setQuantidade(itemDTO.Quantidade());
+            itemEntrega.setStatus(true);
             itemEntrega.setID(new ItemEntregaID(item.getID_Item(), entregaSalva.getID_Entrega()));
             itemEntregaRepository.save(itemEntrega);
         }
@@ -116,6 +119,7 @@ public class EntregaService {
         entrega.setData_Entrega(dados.Data());
         entrega.setReceptor(novoReceptor);
         entrega.setEvento(novoEvento);
+        entrega.setStatus(true);
         /* COLOCANDO NOVOS ITENS NA ENTREGA */
         for (ItemEntregaRequestDTO itemDTO : dados.itensEntregues()) {
             Item item = itemRepository.findById(itemDTO.ID_Item())
@@ -130,6 +134,7 @@ public class EntregaService {
             itemEntrega.setID_Entrega(entrega);
             itemEntrega.setID_Item(item);
             itemEntrega.setQuantidade(itemDTO.Quantidade());
+            itemEntrega.setStatus(true);
             itemEntrega.setID(new ItemEntregaID(item.getID_Item(), entrega.getID_Entrega()));
             entrega.getItens().add(itemEntregaRepository.save(itemEntrega));
         }
@@ -151,6 +156,10 @@ public class EntregaService {
         }
         entrega.setStatus(false);
         entregaRepository.save(entrega);
+    }
+
+    private static Specification<Entrega> isAtivo(boolean status) {
+        return (root, query, cb) -> cb.equal(root.get("Status"), status);
     }
 
     private static Specification<Entrega> dataAntesDe(LocalDate date) {

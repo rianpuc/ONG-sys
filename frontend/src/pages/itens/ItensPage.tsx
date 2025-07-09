@@ -16,7 +16,7 @@ const columns = [
     { header: 'Quantidade', accessor: 'Quantidade_Atual' as const }
 ];
 
-const Itens = () => {
+const ItensPage = () => {
     /* DECLARACAO USESTATES */
     const [modalAberto, setModalAberto] = useState<string | null>(null);
     const [selectedItem, setSelectedItem] = useState<Item | null>(null);
@@ -100,4 +100,4 @@ const Itens = () => {
     )
 }
 
-export default Itens;
+export default ItensPage;

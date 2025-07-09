@@ -23,6 +23,7 @@ import lombok.Setter;
 @EqualsAndHashCode(of = "ID_Entrega")
 public class Entrega {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "ID_Entrega")
     private Integer ID_Entrega;
     @Column(name = "Data_Entrega")

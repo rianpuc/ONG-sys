@@ -19,7 +19,7 @@ const columns = [
     { header: 'Instituição', accessor: 'nomeInstituicao' as const }
 ]
 
-const Voluntarios = () => {
+const VoluntariosPage = () => {
     /* DECLARACAO DE USESTATES */
     const [filtrosAtivos, setFiltrosAtivos] = useState<VoluntarioFiltro>({});
     const [modalAberto, setModalAberto] = useState<string | null>(null);
@@ -114,4 +114,4 @@ const Voluntarios = () => {
     )
 }
 
-export default Voluntarios;
+export default VoluntariosPage;

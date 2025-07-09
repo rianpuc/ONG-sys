@@ -22,7 +22,7 @@ const columns = [
     }
 ];
 
-const Doadores = () => {
+const DoadoresPage = () => {
     /* DECLARACAO USESTATES */
     const [modalAberto, setModalAberto] = useState<string | null>(null);
     const [selectedDoador, setSelectedDoador] = useState<Doador | null>(null);
@@ -104,4 +104,4 @@ const Doadores = () => {
     )
 }
 
-export default Doadores;
+export default DoadoresPage;

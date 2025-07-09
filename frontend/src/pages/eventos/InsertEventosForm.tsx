@@ -4,12 +4,13 @@ import useMutation from '../../hooks/useMutation';
 
 // O formulário recebe a lista de instituições e uma função para fechar o modal no sucesso
 interface EventoFormProps {
+    name?: string;
     instituicoes: Instituicao[];
     onSuccess: () => void;
 }
 
-const InsertVoluntariosForm = ({ instituicoes, onSuccess }: EventoFormProps) => {
-    const [local, setLocal] = useState('');
+const InsertEventosForm = ({ name, instituicoes, onSuccess }: EventoFormProps) => {
+    const [local, setLocal] = useState(name ? name : '');
     const [data, setData] = useState('');
     const [selectedInstituicaoId, setSelectedInstituicaoId] = useState('');
     const { execute: criarEvento, isLoading, error } = useMutation('/evento', 'POST');
@@ -65,4 +66,4 @@ const InsertVoluntariosForm = ({ instituicoes, onSuccess }: EventoFormProps) => 
     );
 };
 
-export default InsertVoluntariosForm;
+export default InsertEventosForm;

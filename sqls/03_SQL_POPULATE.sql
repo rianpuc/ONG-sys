@@ -14,7 +14,7 @@ INSERT INTO `receptor` (`CPF`, `Nome`, `Endereco`) VALUES
 ('99988877766', 'Carlos Souza', 'Travessa Alegria, 30');
 -- Inserindo Eventos de distribuição
 INSERT INTO `evento` (`ID_Evento`, `Local`, `Data`, `Instituicao`) VALUES
-(1, 'Praca da Matriz', '2025-07-15', '32638826000177'),
+(1, 'Praca da Matriz', '2025-07-03', '32638826000177'),
 (2, 'Ginasio Municipal', '2025-08-20', '32638826000177');
 -- Inserindo Tipos de Itens que a ONG armazena
 INSERT INTO `item` (`ID_Item`, `Nome_Item`, `Tipo_Item`, `Quantidade_Atual`) VALUES

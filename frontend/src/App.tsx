@@ -1,14 +1,14 @@
 import './App.css'
 import { Routes, Route } from 'react-router-dom'
-import Homepage from './pages/home/Homepage';
-import Itens from './pages/itens/Itens';
-import Doacoes from './pages/doacao/Doacao';
-import Doadores from './pages/doadores/Doadores';
-import Entregas from './pages/entregas/Entregas';
-import Eventos from './pages/eventos/Eventos';
-import Receptores from './pages/receptores/Receptores';
 import Header from './components/layout/Header';
-import Voluntarios from './pages/voluntarios/Voluntarios';
+import Homepage from './pages/home/Homepage';
+import DoacaoPage from './pages/doacao/DoacaoPage';
+import DoadoresPage from './pages/doadores/DoadoresPage';
+import EntregasPage from './pages/entregas/EntregasPage';
+import EventosPage from './pages/eventos/EventosPage';
+import ItensPage from './pages/itens/ItensPage';
+import ReceptoresPage from './pages/receptores/ReceptoresPage';
+import VoluntariosPage from './pages/voluntarios/VoluntariosPage';
 
 
 function App() {
@@ -17,20 +17,18 @@ function App() {
       <Header />
       <main className="main-content">
         <Routes>
-          {/* 2. Esta é a rota que define sua página principal */}
           <Route path="/" element={<Homepage />} />
-          <Route path="/itens" element={<Itens />} />
-          <Route path="/doacoes" element={<Doacoes />} />
-          <Route path="/doadores" element={<Doadores />} />
-          <Route path="/entregas" element={<Entregas />} />
-          <Route path="/eventos" element={<Eventos />} />
-          <Route path="/receptores" element={<Receptores />} />
-          <Route path="/voluntarios" element={<Voluntarios />} />
-          {/* Adicione outras rotas aqui conforme for criando as páginas */}
+          <Route path="/doacoes" element={<DoacaoPage />} />
+          <Route path="/doadores" element={<DoadoresPage />} />
+          <Route path="/entregas" element={<EntregasPage />} />
+          <Route path="/eventos" element={<EventosPage />} />
+          <Route path="/itens" element={<ItensPage />} />
+          <Route path="/receptores" element={<ReceptoresPage />} />
+          <Route path="/voluntarios" element={<VoluntariosPage />} />
         </Routes>
       </main>
     </div>
   )
 }
 
-export default App
+export default App;

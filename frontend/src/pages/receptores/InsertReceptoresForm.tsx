@@ -4,11 +4,12 @@ import useMutation from '../../hooks/useMutation';
 
 // O formulário recebe a lista de instituições e uma função para fechar o modal no sucesso
 interface ReceptorFormProps {
+    name?: string;
     onSuccess: () => void;
 }
 
-const InsertReceptoresForm = ({ onSuccess }: ReceptorFormProps) => {
-    const [nome, setNome] = useState('');
+const InsertReceptoresForm = ({ name, onSuccess }: ReceptorFormProps) => {
+    const [nome, setNome] = useState(name ? name : '');
     const [cpf, setCpf] = useState('');
     const [endereco, setEndereco] = useState('');
     const { execute: criarReceptor, isLoading, error } = useMutation('/receptor', 'POST');

@@ -18,7 +18,7 @@ const columns = [
     { header: 'Organizador', accessor: 'Organizador' as const }
 ];
 
-const Eventos = () => {
+const EventosPage = () => {
     /* DECLARACAO DE USESTATES */
     const [filtrosAtivos, setFiltrosAtivos] = useState<EventoFiltro>({});
     const [modalAberto, setModalAberto] = useState<string | null>(null);
@@ -113,4 +113,4 @@ const Eventos = () => {
     )
 }
 
-export default Eventos;
+export default EventosPage;

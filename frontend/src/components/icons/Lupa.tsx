@@ -1,5 +1,3 @@
-import React from 'react';
-
 // Um componente simples que retorna o SVG de uma lupa
 const Lupa = ({ className }: { className?: string }) => (
     <svg

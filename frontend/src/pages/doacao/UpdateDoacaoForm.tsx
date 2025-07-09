@@ -7,7 +7,7 @@ import Modal from '../../components/ui/Modal';
 import InsertDoadoresForm from '../doadores/InsertDoadoresForm';
 import InsertItensForm from '../itens/InsertItensForm';
 import useMutation from '../../hooks/useMutation';
-import type Doacao from './Doacao';
+import type { Doacao } from '../../interface/Doacao';
 
 // Definindo as props que o formulário recebe
 interface UpdateFormProps {
