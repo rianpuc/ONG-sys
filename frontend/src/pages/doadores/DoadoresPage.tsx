@@ -10,6 +10,7 @@ import Modal from "../../components/ui/Modal";
 import InsertDoadoresForm from "./InsertDoadoresForm";
 import FilterDoadoresForm from "./FilterDoadoresForm";
 import UpdateDoadoresForm from "./UpdateDoadoresForm";
+import Dashboard from "../../components/layout/Dashboard";
 
 const columns = [
     { header: 'Nome', accessor: 'Nome_Doador' as const },
@@ -84,21 +85,17 @@ const DoadoresPage = () => {
             <Modal isOpen={modalAberto === 'atualizar'} onClose={() => setModalAberto(null)} title="Atualizar Doador">
                 <UpdateDoadoresForm selectedDoador={selectedDoador!} onSuccess={() => { setModalAberto(null); setRefetchTrigger(prev => prev + 1); }} />
             </Modal>
-            <div className="flex flex-col items-center gap-6 p-8 bg-gray-900">
-                <h1 className="w-full bg-gray-300 text-black font-bold text-center text-lg py-3 px-6 rounded-full">
-                    Doadores no Sistema: {doadores?.length || 0}
-                </h1>
-                <div className="flex flex-wrap justify-center gap-4">
+            <div className="w-full h-full max-w-10xl p-8 mx-auto flex flex-col gap-8">
+                <Dashboard titulo="Doadores" dados={doadores} isLoading={isLoading}>
                     <Button name="Criar" onClick={() => { setModalAberto('inserir'); }}>Inserir</Button>
                     {queryString.length > 0 ? <Button name="Procurar" onClick={() => setFiltrosAtivos({})}>Limpar filtros</Button> :
                         <Button name="Procurar" onClick={() => setModalAberto('procurar')}>Procurar</Button>}
                     <Button name="Atualizar" disabled={selectedDoador ? false : true} onClick={() => { setModalAberto('atualizar'); }}>Atualizar</Button>
                     <Button name="Deletar" disabled={selectedDoador ? false : true} onClick={handleDeleteClick}>Deletar</Button>
+                </Dashboard>
+                <div className="container h-full rounded-lg inset-shadow-xs inset-shadow-white/25 shadow-[0px_2px_2px] shadow-black/25 p-4 bg-gradient-to-t from-gradientcontainer-100/50 to-basecontainer-100/50">
+                    {content}
                 </div>
-                <Button name="Plano">Mostrar plano de execução</Button>
-            </div>
-            <div className="container mx-auto p-4">
-                {content}
             </div>
         </>
     )

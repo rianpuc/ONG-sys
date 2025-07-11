@@ -15,10 +15,10 @@ interface TableProps<T> {
 const Table = <T extends { [key: string]: any }>({ data, columns, onRowClick, selectedItem, button }: TableProps<T>) => {
     const keyAccessor = Object.keys(data[0] || {})[0] as keyof T;
     return (
-        <div className="text-white">
+        <div className="text-white ">
             <div className="flex gap-2 mb-2 font-bold">
                 {columns.map((column) => (
-                    <div key={column.header} className="flex-1 p-3 bg-gray-700 rounded-md text-center">
+                    <div key={column.header} className="flex-1 p-3 text-center">
                         {column.header}
                     </div>
                 ))}
@@ -30,10 +30,10 @@ const Table = <T extends { [key: string]: any }>({ data, columns, onRowClick, se
                         <div
                             key={item[keyAccessor]}
                             onClick={() => onRowClick && onRowClick(item)}
-                            className={`flex gap-2 p-4 rounded-md items-center transition-all duration-300 ease-out hover:scale-103 
-                        ${index % 2 === 0 ? 'bg-gray-600' : 'bg-gray-500'}
-                        ${onRowClick ? 'cursor-pointer hover:scale-103' : ''}
-                        ${isSelected ? 'bg-indigo-900' : 'scale-100'}`}>
+                            className={`flex gap-2 py-4 rounded-lg items-center transition-all duration-200 ease-out hover:scale-101 
+                        ${index % 2 === 0 ? 'bg-firstrow-100' : 'bg-secondrow-100'}
+                        ${onRowClick ? 'cursor-pointer' : ''}
+                        ${isSelected ? 'scale-101' : 'scale-100'}`}>
                             {columns.map((column) => (
                                 <div key={`${item[keyAccessor]}-${column.header}`} className="flex-1 text-center">
                                     {column.render ? column.render(item) : item[column.accessor!]}

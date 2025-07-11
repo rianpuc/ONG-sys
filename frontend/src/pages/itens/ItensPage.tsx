@@ -9,6 +9,7 @@ import Modal from "../../components/ui/Modal";
 import InsertItensForm from "./InsertItensForm";
 import FilterItensForm from "./FilterItensForm";
 import UpdateItensForm from "./UpdateItensForm";
+import Dashboard from "../../components/layout/Dashboard";
 
 const columns = [
     { header: 'Nome do Item', accessor: 'Nome_Item' as const },
@@ -80,21 +81,17 @@ const ItensPage = () => {
                     setSelectedItem(null);
                 }} />
             </Modal>
-            <div className="flex flex-col items-center gap-6 p-8 bg-gray-900">
-                <h1 className="w-full bg-gray-300 text-black font-bold text-center text-lg py-3 px-6 rounded-full">
-                    Itens no Sistema: {itens?.length || 0}
-                </h1>
-                <div className="flex flex-wrap justify-center gap-4">
+            <div className="w-full h-full max-w-10xl p-8 mx-auto flex flex-col gap-8">
+                <Dashboard titulo="Itens" dados={itens} isLoading={isLoading}>
                     <Button name="Criar" onClick={() => { setModalAberto('inserir'); }}>Inserir</Button>
                     {queryString.length > 0 ? <Button name="Procurar" onClick={() => setFiltrosAtivos({})}>Limpar filtros</Button> :
                         <Button name="Procurar" onClick={() => setModalAberto('procurar')}>Procurar</Button>}
                     <Button name="Atualizar" disabled={selectedItem ? false : true} onClick={() => { setModalAberto('atualizar'); }}>Atualizar</Button>
                     <Button name="Deletar" disabled={selectedItem ? false : true} onClick={handleDeleteClick}>Deletar</Button>
+                </Dashboard>
+                <div className="container h-full rounded-lg inset-shadow-xs inset-shadow-white/25 shadow-[0px_2px_2px] shadow-black/25 p-4 bg-gradient-to-t from-gradientcontainer-100/50 to-basecontainer-100/50">
+                    {content}
                 </div>
-                <Button name="Plano">Mostrar plano de execução</Button>
-            </div>
-            <div className="container mx-auto p-4">
-                {content}
             </div>
         </>
     )

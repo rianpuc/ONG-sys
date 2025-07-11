@@ -3,17 +3,22 @@ import "./Card.css"
 import { Link } from 'react-router-dom';
 interface CardProps {
     to: string;
-    children: ReactNode;
+    icon: ReactNode;
+    title: string;
+    description: string;
+    className?: string;
 }
 
-export function Card({ to, children }: CardProps) {
+export function Card({ to, icon, title, description, className }: CardProps) {
     return (
         <>
-            <div className="flex flex-col shadow-md m-4 border-gray-700 border-1 rounded-md transition duration-500 hover:shadow-3xl hover:scale-103">
-                <Link to={to} className="card-body items-center">
-                    {children}
-                </Link>
-            </div>
+            <Link to={to} className={`bg-blue-600 text-white p-6 rounded-2xl flex flex-col text-center items-center shadow-[0px_2px_10px] shadow-black ${className}`}>
+                <div className="">
+                    {icon}
+                </div>
+                <h3 className="font-bold text-lg mb-1">{title}</h3>
+                <p className="text-sm text-blue-200 flex-grow">{description}</p>
+            </Link>
         </>
     )
 }

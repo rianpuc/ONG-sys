@@ -13,6 +13,7 @@ import { formatarDataParaExibicao } from "../../utils/Formatters";
 import InsertDoacaoForm from "./InsertDoacaoForm";
 import UpdateDoacaoForm from "./UpdateDoacaoForm";
 import Lupa from "../../components/icons/Lupa";
+import Dashboard from "../../components/layout/Dashboard";
 
 
 const DoacaoPage = () => {
@@ -34,7 +35,7 @@ const DoacaoPage = () => {
                 <div className="flex justify-center">
                     <button
                         onClick={() => setOpenDetalhes(doacao)}
-                        className="p-2 text-gray-400 hover:text-white hover:bg-gray-600 rounded-full transition-colors"
+                        className="text-gray-400 hover:text-white rounded-full transition-colors"
                         aria-label={`Ver detalhes da doação ${doacao.ID_Doacao}`}
                     >
                         <Lupa className="w-5 h-5" />
@@ -107,21 +108,17 @@ const DoacaoPage = () => {
                 <UpdateDoacaoForm doadores={doadores!} itens={itens!} selectedDoacao={selectedDoacao!} onDoadorCreated={handleDoadorCreated}
                     onItemCreated={handleItemCreated} onSuccess={() => { setModalAberto(null); setRefetchTrigger(prev => prev + 1); }} />
             </Modal>
-            <div className="flex flex-col items-center gap-6 p-8 bg-gray-900">
-                <h1 className="w-full bg-gray-300 text-black font-bold text-center text-lg py-3 px-6 rounded-full">
-                    Doações no Sistema: {doacoes?.length || 0}
-                </h1>
-                <div className="flex flex-wrap justify-center gap-4">
+            <div className="w-full h-full max-w-10xl p-8 mx-auto flex flex-col gap-8">
+                <Dashboard titulo="Doações" dados={doacoes} isLoading={isLoading}>
                     <Button name="Criar" onClick={() => { setModalAberto('inserir'); }}>Inserir</Button>
                     {queryString.length > 0 ? <Button name="Procurar" onClick={() => setFiltrosAtivos({})}>Limpar filtros</Button> :
                         <Button name="Procurar" onClick={() => setModalAberto('procurar')}>Procurar</Button>}
                     <Button name="Atualizar" disabled={selectedDoacao ? false : true} onClick={() => { setModalAberto('atualizar'); }}>Atualizar</Button>
                     <Button name="Deletar" disabled={selectedDoacao ? false : true} onClick={handleDeleteClick}>Deletar</Button>
+                </Dashboard>
+                <div className="container h-full rounded-lg inset-shadow-xs inset-shadow-white/25 shadow-[0px_2px_2px] shadow-black/25 p-4 bg-gradient-to-t from-gradientcontainer-100/50 to-basecontainer-100/50">
+                    {content}
                 </div>
-                <Button name="Plano">Mostrar plano de execução</Button>
-            </div>
-            <div className="container mx-auto p-4">
-                {content}
             </div>
             <Modal
                 isOpen={openDetalhes ? true : false}

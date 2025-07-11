@@ -1,2 +1,55 @@
+@import url('https://fonts.googleapis.com/css2?family=Figtree:ital,wght@0,300..900;1,300..900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap');
 @import "tailwindcss";
 @plugin "daisyui";
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+.bg {
+    background-color: #0a0e1b;
+    background-image:
+        radial-gradient(rgba(255, 255, 255, 0.05) 1px, transparent 1px),
+        radial-gradient(ellipse at center, rgba(0, 40, 158, 1) 0%, transparent 80%),
+        radial-gradient(ellipse at top left, rgba(66, 35, 71, 0.6) 0%, transparent 40%),
+        radial-gradient(ellipse at top right, rgba(16, 70, 70, 0.2) 0%, transparent 100%),
+        radial-gradient(ellipse at top center, rgba(133, 54, 1, 0.4) 0%, transparent 40%),
+        radial-gradient(ellipse at bottom left, rgba(16, 70, 70, 0.6) 0%, transparent 40%),
+        linear-gradient(rgba(10, 14, 27, 0.95), rgba(10, 14, 27, 0.95)),
+        url('./assets/pattern.svg');
+    background-size: 100% 100%, 100% 100%, 100% 100%, 100% 100%, 100% 100%, 100% 100%, 100% 100%;
+    background-position: center, center, center, center, center, center;
+}
+
+.bg-home {
+    background-color: #0a0e1b;
+    background-image:
+        radial-gradient(rgba(255, 255, 255, 0.05) 1px, transparent 1px),
+        radial-gradient(ellipse at center, rgb(0, 40, 158, 0.9) 0%, transparent 80%),
+        radial-gradient(ellipse at top left, rgba(66, 35, 71, 0.6) 0%, transparent 40%),
+        radial-gradient(ellipse at top center, rgba(88, 130, 255, 0.5) 0%, transparent 50%),
+        radial-gradient(ellipse at bottom center, transparent 0%, rgba(66, 35, 71, 0.25) 80%),
+        linear-gradient(rgba(10, 14, 27, 0.95), rgba(10, 14, 27, 0.95)),
+        url('./assets/pattern.svg');
+    background-size: 100% 100%, 100% 100%, 100% 100%, 100% 100%, 100% 100%, 100% 100%, 100% 100%;
+    background-position: center, center, center, center, center, center;
+}
+
+* {
+    font-family: "Figtree", sans-serif;
+}
+
+@theme {
+    --color-iconborder-100: oklch(0.4075 0.2351 272.36);
+    --color-iconborder-200: oklch(0.2529 0.1505 272.36);
+    --color-navcolor-100: oklch(0.1486 0.0487 265.13);
+    --color-basecontainer-100: oklch(0.2583 0.1066 267.07);
+    --color-buttonscontainer-100: oklch(0.2374 0.0825 267.79);
+    --color-gradientcontainer-100: oklch(0.1595 0.0494 267.69);
+    --color-firstrow-100: oklch(0.4028 0.1117 263.15);
+    --color-secondrow-100: oklch(0.1373 0.061 261.44);
+    --color-deletebtn-100: oklch(0.6546 0.2212 13.38);
+    --color-searchbtn-100: oklch(0.5311 0.2531 266.05);
+    --color-updatebtn-100: oklch(0.508 0.2417 293.83);
+    --color-insertbtn-100: oklch(0.8006 0.1797 152.53);
+}

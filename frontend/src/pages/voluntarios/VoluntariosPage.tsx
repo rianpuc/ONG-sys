@@ -11,6 +11,7 @@ import InsertVoluntariosForm from "./InsertVoluntariosForm";
 import FilterVoluntariosForm from "./FilterVoluntariosForm";
 import UpdateVoluntariosForm from "./UpdateVoluntariosForm";
 import useMutation from "../../hooks/useMutation";
+import Dashboard from "../../components/layout/Dashboard";
 
 const columns = [
     { header: 'Identificação', render: (voluntario: Voluntario) => { return formatIdentificacao(voluntario.CPF, "fisica") } },
@@ -88,27 +89,17 @@ const VoluntariosPage = () => {
                     setSelectedVoluntario(null)
                 }} instituicoes={instituicoes || []} />
             </Modal>
-            <div className="flex flex-col items-center gap-6 p-8 bg-gray-900">
-                <h1 className="w-full bg-gray-300 text-black font-bold text-center text-lg py-3 px-6 rounded-full">
-                    Voluntários no Sistema: {voluntarios?.length || 0}
-                </h1>
-                <div className="flex flex-wrap justify-center gap-4">
-                    {/* BOTAO DE INSERIR */}
+            <div className="w-full h-full max-w-10xl p-8 mx-auto flex flex-col gap-8">
+                <Dashboard titulo="Voluntários" dados={voluntarios} isLoading={isLoading}>
                     <Button name="Criar" onClick={() => { setModalAberto('inserir'); }}>Inserir</Button>
-                    {/* LOGICA PARA MOSTRAR BOTAO DE PROCURAR, OU PARA LIMPAR FILTROS */}
                     {queryString.length > 0 ? <Button name="Procurar" onClick={() => setFiltrosAtivos({})}>Limpar filtros</Button> :
-                        <Button name="Procurar" onClick={() =>
-                            setModalAberto('procurar')
-                        }>Procurar</Button>
-                    }
-                    {/* BOTAO DE ATUALIZAR */}
+                        <Button name="Procurar" onClick={() => setModalAberto('procurar')}>Procurar</Button>}
                     <Button name="Atualizar" disabled={selectedVoluntario ? false : true} onClick={() => { setModalAberto('atualizar'); }}>Atualizar</Button>
                     <Button name="Deletar" disabled={selectedVoluntario ? false : true} onClick={handleDeleteClick}>Deletar</Button>
+                </Dashboard>
+                <div className="container h-full rounded-lg inset-shadow-xs inset-shadow-white/25 shadow-[0px_2px_2px] shadow-black/25 p-4 bg-gradient-to-t from-gradientcontainer-100/50 to-basecontainer-100/50">
+                    {content}
                 </div>
-                <Button name="Plano">Mostrar plano de execução</Button>
-            </div>
-            <div className="container mx-auto p-4">
-                {content}
             </div>
         </>
     )

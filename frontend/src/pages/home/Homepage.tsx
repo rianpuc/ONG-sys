@@ -1,50 +1,67 @@
-import './Homepage.css'; // Vamos criar um CSS para estilizar a página
+import { Swiper, SwiperSlide } from 'swiper/react';
+import { Navigation } from 'swiper/modules';
+import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { Card } from '../../components/card/Card';
+import DoacaoIcon from '../../components/icons/DoacaoIcon';
+import DoadoresIcon from '../../components/icons/DoadoresIcon';
+import EntregasIcon from '../../components/icons/EntregasIcon';
+import EventosIcon from '../../components/icons/EventosIcon';
+import ItensIcon from '../../components/icons/ItensIcon';
+import ReceptoresIcon from '../../components/icons/ReceptoresIcon';
+import VoluntariosIcon from '../../components/icons/VoluntariosIcon';
+import HeroCard from '../../components/layout/HeroCard';
+
+const cardsData = [
+    { to: "/doacoes", title: 'Controle de Doações', icon: <DoacaoIcon size={48} />, description: 'Registre e gerencie todas as doações recebidas pela ONG.' },
+    { to: "/doadores", title: 'Gerenciar Doadores', icon: <DoadoresIcon size={48} />, description: 'Visualize, adicione e edite informações dos doadores cadastrados.' },
+    { to: "/entregas", title: 'Registrar Entregas', icon: <EntregasIcon size={48} />, description: 'Acompanhe a distribuição de doações para os receptores.' },
+    { to: "/eventos", title: 'Próximos Eventos', icon: <EventosIcon size={48} />, description: 'Organize e divulgue os eventos de arrecadação e distribuição.' },
+    { to: "/itens", title: 'Controle de Itens', icon: <ItensIcon size={48} />, description: 'Monitore o estoque de itens doados e que serão distribuídos.' },
+    { to: "/receptores", title: 'Gerenciar Receptores', icon: <ReceptoresIcon size={48} />, description: 'Mantenha o cadastro de pessoas e famílias que recebem ajuda.' },
+    { to: "/voluntarios", title: 'Gerenciar Voluntários', icon: <VoluntariosIcon size={48} />, description: 'Cadastre e organize os voluntários e suas atividades na ONG.' }
+];
 
 const Homepage = () => {
     return (
         <>
             <title>Home</title>
-            <div>
-                <section className="bg-gray-400 p-4 h-max flex flex-col flex-wrap items-center justify-between">
-                    <h1 className='text-2xl'>Bem-vindo ao Sistema de Gestão da ONG</h1>
-                    <p>Gerencie doações, doadores, entregas, eventos, itens, receptores e voluntários de forma centralizada e eficiente.</p>
-                </section>
+            <div className='w-full h-full flex flex-col items-center justify-center gap-12'>
+                <div className="w-full max-w-7xl">
+                    <HeroCard></HeroCard>
+                </div>
 
-                <section className="">
-                    <h2 className='text-2xl m-10 text-center block'>Acesso Rápido</h2>
-                    <div className="card-container">
-                        {/* Cada card é um link para outra página */}
-                        <Card to="/doacoes">
-                            <h3 className='card-title'>Controle de Doações</h3>
-                            <p className='grow'>Registre e gerencie todas as doações recebidas pela ONG.</p>
-                        </Card>
-                        <Card to="/doadores">
-                            <h3 className='card-title'>Gerenciar Doadores</h3>
-                            <p>Visualize, adicione e edite informações dos doadores cadastrados.</p>
-                        </Card>
-                        <Card to="/entregas">
-                            <h3 className='card-title'>Registrar Entregas</h3>
-                            <p className='grow'>Acompanhe a distribuição de doações para os receptores.</p>
-                        </Card>
-                        <Card to="/eventos">
-                            <h3 className='card-title'>Próximos Eventos</h3>
-                            <p className='grow'>Organize e divulgue os eventos de arrecadação e distribuição.</p>
-                        </Card>
-                        <Card to="/itens">
-                            <h3 className='card-title'>Controle de Itens</h3>
-                            <p className='grow'>Monitore o estoque de itens doados e que serão distribuídos.</p>
-                        </Card>
-                        <Card to="/receptores">
-                            <h3 className='card-title'>Gerenciar Receptores</h3>
-                            <p className='grow'>Mantenha o cadastro de pessoas e famílias que recebem ajuda.</p>
-                        </Card>
-                        <Card to="/voluntarios">
-                            <h3 className='card-title'>Gerenciar Voluntários</h3>
-                            <p className='grow'>Cadastre e organize os voluntários e suas atividades na ONG.</p>
-                        </Card>
+                <div className="w-full max-w-7xl">
+                    <div className="relative">
+                        <Swiper
+                            modules={[Navigation]}
+                            spaceBetween={100}
+                            slidesPerView={3}
+                            loop={true}
+                            navigation={{
+                                nextEl: '.swiper-button-next-custom',
+                                prevEl: '.swiper-button-prev-custom',
+                            }}
+                            breakpoints={{
+                                320: { slidesPerView: 1, spaceBetween: 10 },
+                                768: { slidesPerView: 2, spaceBetween: 20 },
+                                1024: { slidesPerView: 3, spaceBetween: 30 },
+                            }}
+                        >
+                            {cardsData.map((cardInfo) => (
+                                <SwiperSlide className='h-auto py-10' key={cardInfo.to}>
+                                    <Card {...cardInfo} className="h-full px-10" />
+                                </SwiperSlide>
+                            ))}
+                        </Swiper>
+                        <div className="swiper-button-prev-custom absolute top-1/2 -translate-y-1/2 left-0 -translate-x-16 z-10 p-2 bg-gray-800/50 hover:bg-gray-700/70 rounded-full cursor-pointer">
+                            <ChevronLeft size={32} />
+                        </div>
+                        <div className="swiper-button-next-custom absolute top-1/2 -translate-y-1/2 right-0 translate-x-16 z-10 p-2 bg-gray-800/50 hover:bg-gray-700/70 rounded-full cursor-pointer">
+                            <ChevronRight size={32} />
+                        </div>
+
                     </div>
-                </section>
+                </div>
             </div>
         </>
     );
