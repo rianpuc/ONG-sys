@@ -69,7 +69,7 @@ const FilterDoadoresForm = ({ onAplicarFiltros }: FilterFormProps) => {
             <div>
                 <label htmlFor="nome" className="block text-sm font-medium text-gray-300">Nome do Doador</label>
                 <input type="text" id="nome" value={nome} onChange={e => setNome(e.target.value)}
-                    className="mt-1 block w-full bg-gray-700 border-gray-600 rounded-md py-2 px-3 text-white" />
+                    className="mt-1 block w-full bg-inputfield-100 border-none outline-none rounded-md py-2 px-3 text-white" />
             </div>
 
             <div>
@@ -82,7 +82,7 @@ const FilterDoadoresForm = ({ onAplicarFiltros }: FilterFormProps) => {
                         setCnpj('');
                     }
                 }}
-                    className="mt-1 block w-full bg-gray-700 border-gray-600 rounded-md py-2 px-3 text-white">
+                    className="mt-1 block w-full bg-inputfield-100 border-none outline-none rounded-md py-2 px-3 text-white">
                     <option value="">Todos</option>
                     <option value="Fisica">Fisica</option>
                     <option value="Juridica">Juridica</option>
@@ -90,7 +90,7 @@ const FilterDoadoresForm = ({ onAplicarFiltros }: FilterFormProps) => {
             </div>
             {renderDocument()}
             <div className="pt-4 flex justify-end">
-                <button type="submit" className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+                <button type="submit" className="transition-colors cursor-pointer bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-lg">
                     Aplicar Filtros
                 </button>
             </div>

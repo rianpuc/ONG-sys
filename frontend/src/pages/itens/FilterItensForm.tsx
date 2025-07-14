@@ -32,21 +32,21 @@ const FilterItensForm = ({ onAplicarFiltros }: FilterFormProps) => {
             <div>
                 <label htmlFor="nome" className="block text-sm font-medium text-gray-300">Item</label>
                 <input type="text" id="nome" value={nome} onChange={e => setNome(e.target.value)}
-                    className="mt-1 block w-full bg-gray-700 border-gray-600 rounded-md py-2 px-3 text-white" />
+                    className="mt-1 block w-full bg-inputfield-100 border-none outline-none rounded-md py-2 px-3 text-white" />
             </div>
             <div>
                 <label htmlFor="tipo" className="block text-sm font-medium text-gray-300">Tipo</label>
                 <input type="text" id="tipo" value={tipo} onChange={e => setTipo(e.target.value)}
-                    className="mt-1 block w-full bg-gray-700 border-gray-600 rounded-md py-2 px-3 text-white" />
+                    className="mt-1 block w-full bg-inputfield-100 border-none outline-none rounded-md py-2 px-3 text-white" />
             </div>
 
             <div>
-                <div className="flex items-center gap-2 mt-1">
+                <div className="flex items-center gap-2">
                     <label htmlFor="funcao" className="block text-sm font-medium text-gray-300">Quantidade</label>
                     <select
                         value={operando}
                         onChange={e => setOperando(e.target.value)}
-                        className="bg-gray-700 border-gray-600 rounded-md py-2 px-3 text-white"
+                        className="block w-full bg-inputfield-100 border-none outline-none rounded-md py-2 px-3 text-white"
                     >
                         <option value="">Selecione</option>
                         <option value="maiorQue">Maior que</option>
@@ -60,14 +60,14 @@ const FilterItensForm = ({ onAplicarFiltros }: FilterFormProps) => {
                         max={1000}
                         value={quantidade}
                         onChange={e => setQuantidade(e.target.value)}
-                        className="block w-full bg-gray-700 border-gray-600 rounded-md py-2 px-3 text-white"
+                        className={`block w-full border-none outline-none rounded-md py-2 px-3 text-white ${operando === '' ? "bg-inputfield-100/50" : "bg-inputfield-100"}`}
                         placeholder="Ex: 50"
                     />
                 </div>
             </div>
 
             <div className="pt-4 flex justify-end">
-                <button type="submit" className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+                <button type="submit" className="transition-colors cursor-pointer bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-lg">
                     Aplicar Filtros
                 </button>
             </div>

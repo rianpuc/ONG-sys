@@ -44,18 +44,18 @@ const FilterEntregasForm = ({ onAplicarFiltros, eventos, receptores, itens }: Fi
                 <div className="flex-1">
                     <label htmlFor="dataDepois" className="block text-sm font-medium text-gray-300">A partir de:</label>
                     <input type="date" id="dataDepois" value={dataDepois} onChange={e => setDataDepois(e.target.value)}
-                        className="mt-1 block w-full bg-gray-700 border-gray-600 rounded-md py-2 px-3 text-white" />
+                        className="mt-1 block w-full bg-inputfield-100 border-none outline-none rounded-md py-2 px-3 text-white" />
                 </div>
                 <div className="flex-1">
                     <label htmlFor="dataAntes" className="block text-sm font-medium text-gray-300">Antes de:</label>
                     <input type="date" id="dataAntes" value={dataAntes} onChange={e => setDataAntes(e.target.value)}
-                        className="mt-1 block w-full bg-gray-700 border-gray-600 rounded-md py-2 px-3 text-white" />
+                        className="mt-1 block w-full bg-inputfield-100 border-none outline-none rounded-md py-2 px-3 text-white" />
                 </div>
             </div>
             <div>
                 <label htmlFor="evento" className="block text-sm font-medium text-gray-300">Evento</label>
                 <select id="evento" value={eventoID} onChange={e => setEventoID(e.target.value)}
-                    className="mt-1 block w-full bg-gray-700 border-gray-600 rounded-md py-2 px-3 text-white" >
+                    className="mt-1 block w-full bg-inputfield-100 border-none outline-none rounded-md py-2 px-3 text-white" >
                     <option value="">Todos</option>
                     {eventos.map(e => <option key={e.ID_Evento} value={e.ID_Evento}>{e.Local} - {formatarDataParaExibicao(e.Data)}</option>)}
                 </select>
@@ -63,7 +63,7 @@ const FilterEntregasForm = ({ onAplicarFiltros, eventos, receptores, itens }: Fi
             <div>
                 <label htmlFor="receptor" className="block text-sm font-medium text-gray-300">Receptor</label>
                 <select id="receptor" value={receptorID} onChange={e => setReceptorID(e.target.value)}
-                    className="mt-1 block w-full bg-gray-700 border-gray-600 rounded-md py-2 px-3 text-white">
+                    className="mt-1 block w-full bg-inputfield-100 border-none outline-none rounded-md py-2 px-3 text-white">
                     <option value="">Todos</option>
                     {receptores.map(r => <option key={r.CPF} value={r.CPF}>{r.Nome}</option>)}
                 </select>
@@ -71,7 +71,7 @@ const FilterEntregasForm = ({ onAplicarFiltros, eventos, receptores, itens }: Fi
             <div>
                 <label htmlFor="item" className="block text-sm font-medium text-gray-300">Item</label>
                 <select id="item" value={itemID} onChange={e => setItemID(e.target.value)}
-                    className="mt-1 block w-full bg-gray-700 border-gray-600 rounded-md py-2 px-3 text-white">
+                    className="mt-1 block w-full bg-inputfield-100 border-none outline-none rounded-md py-2 px-3 text-white">
                     <option value="">Todos</option>
                     {itens.map(i => <option key={i.ID_Item} value={i.ID_Item}>{i.Nome_Item}</option>)}
                 </select>
@@ -82,7 +82,7 @@ const FilterEntregasForm = ({ onAplicarFiltros, eventos, receptores, itens }: Fi
                     <select
                         value={operando}
                         onChange={e => setOperando(e.target.value)}
-                        className="bg-gray-700 border-gray-600 rounded-md py-2 px-3 text-white"
+                        className="block w-full bg-inputfield-100 border-none outline-none rounded-md py-2 px-3 text-white"
                     >
                         <option value="">Selecione</option>
                         <option value="maiorQue">Maior que</option>
@@ -96,13 +96,13 @@ const FilterEntregasForm = ({ onAplicarFiltros, eventos, receptores, itens }: Fi
                         max={1000}
                         value={quantidade}
                         onChange={e => setQuantidade(e.target.value)}
-                        className="block w-full bg-gray-700 border-gray-600 rounded-md py-2 px-3 text-white"
+                        className={`block w-full border-none outline-none rounded-md py-2 px-3 text-white ${operando === '' ? "bg-inputfield-100/50" : "bg-inputfield-100"}`}
                         placeholder="Ex: 50"
                     />
                 </div>
             </div>
             <div className="pt-4 flex justify-end">
-                <button type="submit" className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+                <button type="submit" className="transition-colors cursor-pointer bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-lg">
                     Aplicar Filtros
                 </button>
             </div>

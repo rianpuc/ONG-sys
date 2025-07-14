@@ -16,6 +16,14 @@ import InsertReceptoresForm from '../receptores/InsertReceptoresForm';
 import useFetch from '../../hooks/useFetch';
 import type { Instituicao } from '../../interface/Instituicao';
 import type { Entrega } from '../../interface/Entrega';
+import type { ClassNamesConfig } from 'react-select';
+import classNames from 'classnames';
+import { X } from 'lucide-react';
+
+interface EntregaOption {
+    label: string | undefined;
+    value: number | string;
+}
 
 // Definindo as props que o formulário recebe
 interface UpdateFormProps {
@@ -107,6 +115,34 @@ const UpdateEntregasForm = ({ onSuccess, onEventoCreated, onReceptorCreated, onI
         setItensEntrega(novosItens);
     }
 
+    const customClassNames: ClassNamesConfig<EntregaOption> = {
+        control: () =>
+            classNames(
+                'block w-full cursor-pointer bg-inputfield-100 rounded-md py-2 px-3 text-white'
+            ),
+        option: () =>
+            classNames(
+                'text-white py-2 px-3 mb-2 bg-inputoption-100 rounded-md transition-colors hover:bg-inputoption-100/30'
+            ),
+        menu: () =>
+            classNames(
+                'mt-1 bg-inputfield-100 rounded-md text-white',
+            ),
+        menuList: () =>
+            classNames(
+                'p-4 h-50'
+            ),
+        dropdownIndicator: () =>
+            classNames(
+                'text-gray-600'
+            ),
+        clearIndicator: () =>
+            classNames(
+                'text-gray-600'
+            )
+        ,
+    };
+
     const adicionarItem = () => {
         setItensEntrega([...itensEntrega, { ID_Item: '', Nome_Item: '', Tipo_Item: '', Quantidade: 0 }])
     }
@@ -121,28 +157,30 @@ const UpdateEntregasForm = ({ onSuccess, onEventoCreated, onReceptorCreated, onI
             <form onSubmit={handleSubmit} className="space-y-4">
                 <div>
                     <label htmlFor="evento" className="block text-sm font-medium text-gray-300">Evento</label>
-                    <CreatableSelect
+                    <CreatableSelect<EntregaOption>
                         isClearable
+                        unstyled
+                        classNames={customClassNames}
                         value={{ value: selectedEntrega.Evento.ID_Evento, label: selectedEntrega.Evento.Local + ' - ' + selectedEntrega.Evento.Data }}
                         options={eventosOptions}
-                        onChange={(e) => setEventoID(e ? e.value : -1)}
+                        onChange={(e) => setEventoID(e ? Number(e.value) : -1)}
                         onCreateOption={handleCreateEvento}
                         placeholder="Selecione ou digite para criar um novo evento"
                         formatCreateLabel={inputValue => `Criar ${inputValue}...`}
-                        className='bg-gray-600 text-black p-2 rounded-md'
                     />
                 </div>
                 <div>
                     <label htmlFor="receptor" className="block text-sm font-medium text-gray-300">Receptor</label>
-                    <CreatableSelect
+                    <CreatableSelect<EntregaOption>
                         isClearable
+                        unstyled
+                        classNames={customClassNames}
                         value={{ value: selectedEntrega.Receptor.CPF, label: selectedEntrega.Receptor.Nome }}
                         options={receptoresOptions}
                         onChange={(e) => setReceptorID(e ? String(e.value) : '')}
                         onCreateOption={handleCreateReceptor}
                         placeholder="Selecione ou digite para criar um novo receptor"
                         formatCreateLabel={inputValue => `Criar ${inputValue}...`}
-                        className='bg-gray-600 text-black p-2 rounded-md'
                     />
                 </div>
                 <div>
@@ -150,10 +188,12 @@ const UpdateEntregasForm = ({ onSuccess, onEventoCreated, onReceptorCreated, onI
                     <label htmlFor="itens" className="block text-sm font-medium text-gray-300">Itens entregues</label>
                     <div className="space-y-3">
                         {itensEntrega.map((item, index) => (
-                            <div key={index} className="flex items-center gap-2 p-2 bg-gray-700/50 rounded-md">
+                            <div key={index} className="flex items-center gap-2 rounded-md">
                                 {/* Dropdown de Item */}
-                                <CreatableSelect
+                                <CreatableSelect<EntregaOption>
                                     isClearable
+                                    unstyled
+                                    classNames={customClassNames}
                                     required={true}
                                     value={{ value: item.ID_Item, label: item.Nome_Item }}
                                     options={itensOptions}
@@ -161,9 +201,8 @@ const UpdateEntregasForm = ({ onSuccess, onEventoCreated, onReceptorCreated, onI
                                     onCreateOption={handleCreateItem}
                                     placeholder="Selecione um item"
                                     formatCreateLabel={inputValue => `Criar ${inputValue}...`}
-                                    className='bg-gray-600 text-black rounded-md flex-1'
+                                    className='flex-1'
                                 />
-                                {/* Input de Quantidade */}
                                 <input
                                     type="number"
                                     value={item.Quantidade}
@@ -171,12 +210,11 @@ const UpdateEntregasForm = ({ onSuccess, onEventoCreated, onReceptorCreated, onI
                                     min="1"
                                     max="1000"
                                     required
-                                    className="w-24 bg-gray-600 text-white p-2 rounded-md"
+                                    className="w-24 bg-inputfield-100 border-none outline-none rounded-md py-2 px-3 text-white"
                                 />
 
-                                {/* Botão de Remover (só aparece se houver mais de 1 item) */}
                                 {itensEntrega.length > 1 && (
-                                    <button type="button" onClick={() => removerItem(index)} className="bg-red-600 hover:bg-red-700 p-2 rounded-md text-white font-bold">X</button>
+                                    <X onClick={() => removerItem(index)} className='cursor-pointer rounded-md text-rose-500' />
                                 )}
                             </div>
                         ))}
@@ -188,7 +226,7 @@ const UpdateEntregasForm = ({ onSuccess, onEventoCreated, onReceptorCreated, onI
                     </button>
                 </div>
                 <div className="pt-4 flex justify-end">
-                    <button type="submit" className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+                    <button type="submit" className="transition-colors cursor-pointer bg-updatebtn-100 hover:bg-purple-800/80 text-white font-bold py-2 px-4 rounded-lg">
                         Salvar Entrega
                     </button>
                 </div>

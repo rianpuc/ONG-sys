@@ -20,7 +20,7 @@ const MaskedInput = ({ mask, value, onChange, required, ...rest }: MaskedInputPr
             value={value}
             onAccept={(unmaskedValue) => onChange(unmaskedValue)}
             {...rest}
-            className="mt-1 block w-full bg-gray-700 border border-gray-600 rounded-md shadow-sm py-2 px-3 text-white focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+            className="mt-1 block w-full bg-inputfield-100 border-none outline-none rounded-md py-2 px-3 text-white"
         />
     );
 };

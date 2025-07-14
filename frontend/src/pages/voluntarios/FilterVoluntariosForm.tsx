@@ -33,25 +33,25 @@ const FilterVoluntariosForm = ({ onAplicarFiltros, instituicoes }: FilterFormPro
             <div>
                 <label htmlFor="nome" className="block text-sm font-medium text-gray-300">Nome do Voluntário</label>
                 <input type="text" id="nome" value={nome} onChange={e => setNome(e.target.value)}
-                    className="mt-1 block w-full bg-gray-700 border-gray-600 rounded-md py-2 px-3 text-white" />
+                    className="mt-1 block w-full bg-inputfield-100 border-none outline-none rounded-md py-2 px-3 text-white" />
             </div>
 
             <div>
                 <label htmlFor="cpf" className="block text-sm font-medium text-gray-300">CPF</label>
                 <input type="text" id="cpf" value={cpf} onChange={e => setCpf(e.target.value)}
-                    className="mt-1 block w-full bg-gray-700 border-gray-600 rounded-md py-2 px-3 text-white" />
+                    className="mt-1 block w-full bg-inputfield-100 border-none outline-none rounded-md py-2 px-3 text-white" />
             </div>
 
             <div>
                 <label htmlFor="funcao" className="block text-sm font-medium text-gray-300">Função</label>
                 <input type="text" id="funcao" value={funcao} onChange={e => setFuncao(e.target.value)}
-                    className="mt-1 block w-full bg-gray-700 border-gray-600 rounded-md py-2 px-3 text-white" />
+                    className="mt-1 block w-full bg-inputfield-100 border-none outline-none rounded-md py-2 px-3 text-white" />
             </div>
 
             <div>
                 <label htmlFor="instituicao" className="block text-sm font-medium text-gray-300">Instituição</label>
                 <select id="instituicao" value={instituicaoId} onChange={e => setInstituicaoId(e.target.value)}
-                    className="mt-1 block w-full bg-gray-700 border-gray-600 rounded-md py-2 px-3 text-white">
+                    className="mt-1 block w-full bg-inputfield-100 border-none outline-none rounded-md py-2 px-3 text-white">
                     <option value="">Todas</option>
                     {instituicoes.map(inst => (
                         <option key={inst.CNPJ} value={inst.CNPJ}>
@@ -62,7 +62,7 @@ const FilterVoluntariosForm = ({ onAplicarFiltros, instituicoes }: FilterFormPro
             </div>
 
             <div className="pt-4 flex justify-end">
-                <button type="submit" className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+                <button type="submit" className="transition-colors cursor-pointer bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-lg">
                     Aplicar Filtros
                 </button>
             </div>

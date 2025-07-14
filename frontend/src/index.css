@@ -39,6 +39,15 @@
     font-family: "Figtree", sans-serif;
 }
 
+@layer base {
+
+    input[type="number"]::-webkit-inner-spin-button,
+    input[type="number"]::-webkit-outer-spin-button {
+        -webkit-appearance: none;
+        margin: 0;
+    }
+}
+
 @theme {
     --color-iconborder-100: oklch(0.4075 0.2351 272.36);
     --color-iconborder-200: oklch(0.2529 0.1505 272.36);
@@ -53,4 +62,6 @@
     --color-updatebtn-100: oklch(0.508 0.2417 293.83);
     --color-insertbtn-100: oklch(0.8006 0.1797 152.53);
     --color-modal-100: oklch(0.5793 0.1803 271.08);
+    --color-inputfield-100: oklch(0.2926 0.0888 276.82);
+    --color-inputoption-100: oklch(0.373 0.1408 274.72);
 }

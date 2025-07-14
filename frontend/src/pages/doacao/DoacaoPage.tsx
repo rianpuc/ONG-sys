@@ -106,14 +106,14 @@ const DoacaoPage = () => {
     return (
         <>
             <title>Doações</title>
-            <Modal isOpen={modalAberto === 'inserir'} onClose={() => setModalAberto(null)} title="Adicionar Nova Doacao">
+            <Modal isOpen={modalAberto === 'inserir'} onClose={() => setModalAberto(null)} title="Adicionar Nova Doação">
                 <InsertDoacaoForm doadores={doadores!} itens={itens!} onDoadorCreated={handleDoadorCreated} onItemCreated={handleItemCreated}
                     onSuccess={() => { setModalAberto(null); setRefetchTrigger(prev => prev + 1); }} />
             </Modal>
             <Modal isOpen={modalAberto === 'procurar'} onClose={() => setModalAberto(null)} title="Buscar Doações">
                 <FilterDoacaoForm doadores={doadores!} itens={itens!} onAplicarFiltros={handleApplyFiltro} />
             </Modal>
-            <Modal isOpen={modalAberto === 'atualizar'} onClose={() => setModalAberto(null)} title="Atualizar Doacao">
+            <Modal isOpen={modalAberto === 'atualizar'} onClose={() => setModalAberto(null)} title="Atualizar Doação">
                 <UpdateDoacaoForm doadores={doadores!} itens={itens!} selectedDoacao={selectedDoacao!} onDoadorCreated={handleDoadorCreated}
                     onItemCreated={handleItemCreated} onSuccess={() => { setModalAberto(null); setRefetchTrigger(prev => prev + 1); }} />
             </Modal>
@@ -132,18 +132,6 @@ const DoacaoPage = () => {
                     {content}
                 </div>
             </DashboardLayout>
-            {/* <div className="w-full h-full max-w-10xl p-8 mx-auto flex flex-col gap-8">
-                <Dashboard titulo="Doações" dados={doacoes} isLoading={isLoading} data={stats!}>
-                    <Button name="Criar" onClick={() => { setModalAberto('inserir'); }}>Inserir</Button>
-                    {queryString.length > 0 ? <Button name="Procurar" onClick={() => setFiltrosAtivos({})}>Limpar filtros</Button> :
-                        <Button name="Procurar" onClick={() => setModalAberto('procurar')}>Procurar</Button>}
-                    <Button name="Atualizar" disabled={selectedDoacao ? false : true} onClick={() => { setModalAberto('atualizar'); }}>Atualizar</Button>
-                    <Button name="Deletar" disabled={selectedDoacao ? false : true} onClick={handleDeleteClick}>Deletar</Button>
-                </Dashboard>
-                <div className="container h-full rounded-lg inset-shadow-xs inset-shadow-white/25 shadow-[0px_2px_2px] shadow-black/25 p-4 bg-gradient-to-t from-gradientcontainer-100/50 to-basecontainer-100/50">
-                    {content}
-                </div>
-            </div> */}
             <Modal
                 isOpen={openDetalhes ? true : false}
                 onClose={() => setOpenDetalhes(null)}

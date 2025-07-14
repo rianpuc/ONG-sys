@@ -8,6 +8,14 @@ import InsertDoadoresForm from '../doadores/InsertDoadoresForm';
 import InsertItensForm from '../itens/InsertItensForm';
 import useMutation from '../../hooks/useMutation';
 import type { Doacao } from '../../interface/Doacao';
+import classNames from 'classnames';
+import type { ClassNamesConfig } from 'react-select';
+import { X } from 'lucide-react';
+
+interface DoadorOption {
+    label: string | undefined;
+    value: number | "";
+}
 
 // Definindo as props que o formulário recebe
 interface UpdateFormProps {
@@ -80,26 +88,53 @@ const UpdateDoacaoForm = ({ onSuccess, doadores, itens, selectedDoacao, onDoador
         const novosItens = itensDoados.filter((_, i) => i !== index);
         setItensDoados(novosItens);
     }
-
+    const customClassNames: ClassNamesConfig<DoadorOption> = {
+        control: () =>
+            classNames(
+                'block w-full cursor-pointer bg-inputfield-100 rounded-md py-2 px-3 text-white'
+            ),
+        option: () =>
+            classNames(
+                'text-white py-2 px-3 mb-2 bg-inputoption-100 rounded-md transition-colors hover:bg-inputoption-100/30'
+            ),
+        menu: () =>
+            classNames(
+                'mt-1 bg-inputfield-100 rounded-md text-white',
+            ),
+        menuList: () =>
+            classNames(
+                'p-4 h-50'
+            ),
+        dropdownIndicator: () =>
+            classNames(
+                'text-gray-600'
+            ),
+        clearIndicator: () =>
+            classNames(
+                'text-gray-600'
+            )
+        ,
+    };
     return (
         <>
             <form onSubmit={handleSubmit} className="space-y-4">
                 <div>
                     <label htmlFor="data" className="block text-sm font-medium text-gray-300">Data:</label>
                     <input required type="date" id="data" value={data} onChange={e => setData(e.target.value)}
-                        className="mt-1 block w-full bg-gray-700 border-gray-600 rounded-md py-2 px-3 text-white" />
+                        className="mt-1 block w-full bg-inputfield-100 border-none outline-none rounded-md py-2 px-3 text-white" />
                 </div>
                 <div>
                     <label htmlFor="doador" className="block text-sm font-medium text-gray-300">Doador</label>
-                    <CreatableSelect
+                    <CreatableSelect<DoadorOption>
                         isClearable
+                        unstyled
                         options={doadorOptions}
                         value={{ value: selectedDoacao.Doador.ID_Doador, label: selectedDoacao.Doador.Nome_Doador }}
-                        onChange={(e) => setDoadorID(e ? e.value : -1)}
+                        onChange={(e) => setDoadorID(e ? Number(e.value) : -1)}
                         onCreateOption={handleCreateDoador}
                         placeholder="Selecione ou digite para criar um novo doador"
                         formatCreateLabel={inputValue => `Criar ${inputValue}...`}
-                        className='bg-gray-600 text-black p-2 rounded-md'
+                        classNames={customClassNames}
                     />
                 </div>
                 <div>
@@ -107,10 +142,11 @@ const UpdateDoacaoForm = ({ onSuccess, doadores, itens, selectedDoacao, onDoador
                     <label htmlFor="itens" className="block text-sm font-medium text-gray-300">Itens doados</label>
                     <div className="space-y-3">
                         {itensDoados.map((item, index) => (
-                            <div key={index} className="flex items-center gap-2 p-2 bg-gray-700/50 rounded-md">
+                            <div key={index} className="flex items-center gap-2">
                                 {/* Dropdown de Item */}
-                                <CreatableSelect
+                                <CreatableSelect<DoadorOption>
                                     isClearable
+                                    unstyled
                                     required={true}
                                     value={{ value: item.ID_Item, label: item.nomeItem }}
                                     options={itensOptions}
@@ -118,7 +154,8 @@ const UpdateDoacaoForm = ({ onSuccess, doadores, itens, selectedDoacao, onDoador
                                     onCreateOption={handleCreateItem}
                                     placeholder="Selecione um item"
                                     formatCreateLabel={inputValue => `Criar ${inputValue}...`}
-                                    className='bg-gray-600 text-black rounded-md flex-1'
+                                    classNames={customClassNames}
+                                    className='flex-1'
                                 />
                                 {/* Input de Quantidade */}
                                 <input
@@ -128,25 +165,25 @@ const UpdateDoacaoForm = ({ onSuccess, doadores, itens, selectedDoacao, onDoador
                                     min="1"
                                     max="1000"
                                     required
-                                    className="w-24 bg-gray-600 text-white p-2 rounded-md"
+                                    className="w-24 bg-inputfield-100 border-none outline-none rounded-md py-2 px-3 text-white"
                                 />
 
                                 {/* Botão de Remover (só aparece se houver mais de 1 item) */}
                                 {itensDoados.length > 1 && (
-                                    <button type="button" onClick={() => removerItem(index)} className="bg-red-600 hover:bg-red-700 p-2 rounded-md text-white font-bold">X</button>
+                                    <X onClick={() => removerItem(index)} className='cursor-pointer rounded-md text-rose-500' />
                                 )}
                             </div>
                         ))}
                     </div>
 
                     {/* Botão para Adicionar Nova Linha */}
-                    <button type="button" onClick={adicionarItem} className="text-sm text-cyan-400 hover:text-cyan-300 font-semibold">
+                    <button type="button" onClick={adicionarItem} className="transition-colors text-sm cursor-pointer text-cyan-400 hover:text-cyan-300 font-semibold">
                         + Adicionar outro item
                     </button>
                 </div>
                 <div className="pt-4 flex justify-end">
-                    <button type="submit" className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
-                        Salvar Doacao
+                    <button type="submit" className="transition-colors cursor-pointer bg-updatebtn-100 hover:bg-purple-800/80 text-white font-bold py-2 px-4 rounded-lg">
+                        Salvar Doação
                     </button>
                 </div>
             </form>
