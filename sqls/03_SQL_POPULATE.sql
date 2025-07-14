@@ -41,8 +41,8 @@ INSERT INTO `doacao` (`ID_Doacao`, `Data`, `Doador`) VALUES
 (1002, '2025-06-22', 3); -- Doacao do Supermercado Preço Bom
 -- Inserindo registros de Entrega
 INSERT INTO `entrega` (`ID_Entrega`, `Data_Entrega`, `Evento`, `Receptor`) VALUES
-(2001, '2025-07-15', 1, '11122233344'), -- Entrega para João da Silva no evento da Praça da Matriz
-(2002, '2025-07-15', 1, '55566677788'); -- Entrega para Maria Oliveira no evento da Praça da Matriz
+(2001, '2025-07-03', 1, '11122233344'), -- Entrega para João da Silva no evento da Praça da Matriz
+(2002, '2025-07-03', 1, '55566677788'); -- Entrega para Maria Oliveira no evento da Praça da Matriz
 -- Itens que foram doados em cada Doacao
 -- Doacao 1001 (de Ana Pereira)
 INSERT INTO `item_doado` (`ID_Item`, `ID_Doacao`, `Quantidade`) VALUES

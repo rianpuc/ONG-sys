@@ -25,7 +25,7 @@ const disabledMapper = {
 
 const Button = ({ name, children, disabled, onClick }: ButtonProps) => {
     return (
-        <button disabled={disabled} className={`col-span-1 row-span-1 ${disabled ? disabledMapper[name] : mapper[name]}`} onClick={onClick} >
+        <button disabled={disabled} className={`col-span-3 row-span-3 ${disabled ? disabledMapper[name] : mapper[name]}`} onClick={onClick} >
             {children}
         </button>
     )

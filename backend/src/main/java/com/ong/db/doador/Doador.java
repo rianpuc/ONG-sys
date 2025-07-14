@@ -1,5 +1,7 @@
 package com.ong.db.doador;
 
+import java.time.LocalDate;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -34,4 +36,6 @@ public class Doador {
     private String Tipo_Doador;
     @Column(name = "Ativo")
     private boolean Ativo;
+    @Column(name = "Criado")
+    private LocalDate Criado;
 }

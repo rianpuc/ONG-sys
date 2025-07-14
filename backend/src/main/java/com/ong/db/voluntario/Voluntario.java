@@ -32,4 +32,6 @@ public class Voluntario {
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "Instituicao")
     private Instituicao Instituicao;
+    @Column(name = "Status")
+    private boolean Status;
 }

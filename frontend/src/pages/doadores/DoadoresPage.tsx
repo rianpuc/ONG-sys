@@ -11,6 +11,9 @@ import InsertDoadoresForm from "./InsertDoadoresForm";
 import FilterDoadoresForm from "./FilterDoadoresForm";
 import UpdateDoadoresForm from "./UpdateDoadoresForm";
 import Dashboard from "../../components/layout/Dashboard";
+import DashboardLayout from "../../components/layout/DashboardLayout";
+import SimpleStatsCard from "../../components/card/SimpleStatsCard";
+import type { DoadorStats } from "../../interface/DoadorStats";
 
 const columns = [
     { header: 'Nome', accessor: 'Nome_Doador' as const },
@@ -44,6 +47,9 @@ const DoadoresPage = () => {
         setFiltrosAtivos(novosFiltros);
         setModalAberto(null);
     }
+    /* FETCH DOS STATS */
+    const { data: stats, isLoading: isLoadingStats } = useFetch<DoadorStats>(`/stats/doador?trigger=${refetchTrigger}`);
+    console.log(stats);
     const handleRowClick = (doador: Doador) => {
         if (selectedDoador == doador) {
             setSelectedDoador(null);
@@ -85,18 +91,29 @@ const DoadoresPage = () => {
             <Modal isOpen={modalAberto === 'atualizar'} onClose={() => setModalAberto(null)} title="Atualizar Doador">
                 <UpdateDoadoresForm selectedDoador={selectedDoador!} onSuccess={() => { setModalAberto(null); setRefetchTrigger(prev => prev + 1); }} />
             </Modal>
-            <div className="w-full h-full max-w-10xl p-8 mx-auto flex flex-col gap-8">
-                <Dashboard titulo="Doadores" dados={doadores} isLoading={isLoading}>
+            <DashboardLayout>
+                <div className="grid grid-cols-12 gap-4 rounded-lg inset-shadow-xs inset-shadow-white/25 p-3 bg-gradient-to-t from-basecontainer-100 to-buttonscontainer-100 shadow-[0px_2px_2px] shadow-black/25">
+                    <SimpleStatsCard titulo="Doadores" valor={doadores?.length!} isLoading={isLoading} span={4}></SimpleStatsCard>
+                    <div className={`bg-blue-500 rounded-lg p-6 col-span-4 row-span-4 flex flex-col items-start`}>
+                        <span className="text-2xl font-thin">Doadores criados</span>
+                        <span className="text-6xl font-black">{isLoadingStats ? "..." : stats?.doadoresCriados}</span>
+                        <span className="text-blue-200 ml-1">nos últimos 30 dias</span>
+                    </div>
+                    <div className={`bg-blue-500 rounded-lg p-4 col-span-4 row-span-4 flex flex-col items-start`}>
+                        <span className="text-2xl font-bold">Distribuição de Doadores</span>
+                        <p className="mt-2 text-xl text-blue-200 ml-1 font-thin">{`Física(s): ${stats?.doadoresDistribuicao[0].quantidade}`}</p>
+                        <p className="text-xl text-blue-200 ml-1 font-thin">{`Jurídica(s): ${stats?.doadoresDistribuicao[1].quantidade}`}</p>
+                    </div>
                     <Button name="Criar" onClick={() => { setModalAberto('inserir'); }}>Inserir</Button>
                     {queryString.length > 0 ? <Button name="Procurar" onClick={() => setFiltrosAtivos({})}>Limpar filtros</Button> :
                         <Button name="Procurar" onClick={() => setModalAberto('procurar')}>Procurar</Button>}
                     <Button name="Atualizar" disabled={selectedDoador ? false : true} onClick={() => { setModalAberto('atualizar'); }}>Atualizar</Button>
                     <Button name="Deletar" disabled={selectedDoador ? false : true} onClick={handleDeleteClick}>Deletar</Button>
-                </Dashboard>
+                </div>
                 <div className="container h-full rounded-lg inset-shadow-xs inset-shadow-white/25 shadow-[0px_2px_2px] shadow-black/25 p-4 bg-gradient-to-t from-gradientcontainer-100/50 to-basecontainer-100/50">
                     {content}
                 </div>
-            </div>
+            </DashboardLayout>
         </>
     )
 }

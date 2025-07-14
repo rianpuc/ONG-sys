@@ -1,5 +1,6 @@
 package com.ong.db.receptor;
 
+import java.time.LocalDate;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.domain.Specification;
@@ -21,6 +22,7 @@ public class ReceptorService {
         if (Endereco != null && !Endereco.isEmpty()) {
             spec = spec.and(temEndereco(Endereco));
         }
+        spec = spec.and(isAtivo(true));
         List<ReceptorResponseDTO> receptores = repository.findAll(spec).stream().map(ReceptorResponseDTO::new).toList();
         return receptores;
     }
@@ -30,6 +32,8 @@ public class ReceptorService {
         novoReceptor.setCPF(dados.CPF());
         novoReceptor.setNome(dados.Nome());
         novoReceptor.setEndereco(dados.Endereco());
+        novoReceptor.setStatus(true);
+        novoReceptor.setCriado(LocalDate.now());
         Receptor receptorSalvo = repository.save(novoReceptor);
         return new ReceptorResponseDTO(receptorSalvo);
     }
@@ -40,6 +44,7 @@ public class ReceptorService {
         receptor.setCPF(dados.CPF());
         receptor.setEndereco(dados.Endereco());
         receptor.setNome(dados.Nome());
+        receptor.setStatus(true);
         Receptor novoReceptor = repository.save(receptor);
         return new ReceptorResponseDTO(novoReceptor);
     }
@@ -48,7 +53,13 @@ public class ReceptorService {
         if (!repository.existsById(CPF)) {
             throw new RuntimeException("Receptor não encontrado, impossível deletar!");
         }
-        repository.deleteById(CPF);
+        Receptor receptor = repository.findById(CPF).get();
+        receptor.setStatus(false);
+        repository.save(receptor);
+    }
+
+    private Specification<Receptor> isAtivo(boolean b) {
+        return (root, query, cb) -> cb.equal(root.get("Status"), b);
     }
 
     private static Specification<Receptor> temCpf(String cpf) {

@@ -1,5 +1,6 @@
 package com.ong.db.doador;
 
+import java.time.LocalDate;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -58,6 +59,7 @@ public class DoadorService {
             novoDoador.setCNPJ(dados.CNPJ());
         }
         novoDoador.setAtivo(true);
+        novoDoador.setCriado(LocalDate.now());
         Doador doadorSalvo = repository.save(novoDoador);
         return new DoadorResponseDTO(doadorSalvo);
     }

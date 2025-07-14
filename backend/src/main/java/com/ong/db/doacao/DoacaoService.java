@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -30,6 +31,7 @@ public class DoacaoService {
     @Autowired
     private ItemDoadoRepository itemDoadoRepository;
 
+    @Query
     public List<DoacaoResponseDTO> getAll(LocalDate antes, LocalDate depois, Integer doador,
             Integer item, Integer maiorQue, Integer menorQue, Integer igualA) {
         Specification<Doacao> spec = (root, query, cb) -> cb.conjunction();

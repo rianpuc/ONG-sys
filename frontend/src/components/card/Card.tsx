@@ -1,5 +1,4 @@
 import type { ReactNode } from "react";
-import "./Card.css"
 import { Link } from 'react-router-dom';
 interface CardProps {
     to: string;

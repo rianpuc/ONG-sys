@@ -13,6 +13,12 @@ import { formatarDataParaExibicao } from "../../utils/Formatters";
 import InsertDoacaoForm from "./InsertDoacaoForm";
 import UpdateDoacaoForm from "./UpdateDoacaoForm";
 import Lupa from "../../components/icons/Lupa";
+import type { Stats } from "../../interface/Stats";
+import type { DoacaoStats } from "../../interface/DoacaoStats";
+import SimpleStatsCard from "../../components/card/SimpleStatsCard";
+import ComparisonStatsCard from "../../components/card/ComparisonStatsCard";
+import TopItemCard from "../../components/card/TopItemCard";
+import DashboardLayout from "../../components/layout/DashboardLayout";
 import Dashboard from "../../components/layout/Dashboard";
 
 
@@ -61,6 +67,9 @@ const DoacaoPage = () => {
     /* FETCH PARA COLOCAR NOS MODALS */
     const { data: doadores } = useFetch<Doador[]>(`/doador?trigger=${doadorRefetchTrigger}`);
     const { data: itens } = useFetch<Item[]>(`/item?trigger=${itemRefetchTrigger}`);
+    /* FETCH PARA PEGAR STATS */
+    const { data: stats, isLoading: statsIsLoading } = useFetch<DoacaoStats>(`/stats/doacao?trigger=${refetchTrigger}`);
+    console.log(stats);
     const handleApplyFiltro = (novosFiltros: DoacaoFiltro) => {
         setFiltrosAtivos(novosFiltros);
         setModalAberto(null);
@@ -101,15 +110,30 @@ const DoacaoPage = () => {
                 <InsertDoacaoForm doadores={doadores!} itens={itens!} onDoadorCreated={handleDoadorCreated} onItemCreated={handleItemCreated}
                     onSuccess={() => { setModalAberto(null); setRefetchTrigger(prev => prev + 1); }} />
             </Modal>
-            <Modal isOpen={modalAberto === 'procurar'} onClose={() => setModalAberto(null)} title="Buscar Doacoes">
+            <Modal isOpen={modalAberto === 'procurar'} onClose={() => setModalAberto(null)} title="Buscar Doações">
                 <FilterDoacaoForm doadores={doadores!} itens={itens!} onAplicarFiltros={handleApplyFiltro} />
             </Modal>
             <Modal isOpen={modalAberto === 'atualizar'} onClose={() => setModalAberto(null)} title="Atualizar Doacao">
                 <UpdateDoacaoForm doadores={doadores!} itens={itens!} selectedDoacao={selectedDoacao!} onDoadorCreated={handleDoadorCreated}
                     onItemCreated={handleItemCreated} onSuccess={() => { setModalAberto(null); setRefetchTrigger(prev => prev + 1); }} />
             </Modal>
-            <div className="w-full h-full max-w-10xl p-8 mx-auto flex flex-col gap-8">
-                <Dashboard titulo="Doações" dados={doacoes} isLoading={isLoading}>
+            <DashboardLayout>
+                <div className="grid grid-cols-12 gap-4 rounded-lg inset-shadow-xs inset-shadow-white/25 p-3 bg-gradient-to-t from-basecontainer-100 to-buttonscontainer-100 shadow-[0px_2px_2px] shadow-black/25">
+                    <SimpleStatsCard titulo="Doações" valor={doacoes?.length!} isLoading={isLoading} span={4}></SimpleStatsCard>
+                    <ComparisonStatsCard label="Doações" span={4} valorAtual={stats?.doacoesMesAtual} valorAnterior={stats?.doacoesMesAnterior} isLoading={statsIsLoading}></ComparisonStatsCard>
+                    <TopItemCard titulo="Doações" itens={stats?.top3Itens} isLoading={statsIsLoading} span={4}></TopItemCard>
+                    <Button name="Criar" onClick={() => { setModalAberto('inserir'); }}>Inserir</Button>
+                    {queryString.length > 0 ? <Button name="Procurar" onClick={() => setFiltrosAtivos({})}>Limpar filtros</Button> :
+                        <Button name="Procurar" onClick={() => setModalAberto('procurar')}>Procurar</Button>}
+                    <Button name="Atualizar" disabled={selectedDoacao ? false : true} onClick={() => { setModalAberto('atualizar'); }}>Atualizar</Button>
+                    <Button name="Deletar" disabled={selectedDoacao ? false : true} onClick={handleDeleteClick}>Deletar</Button>
+                </div>
+                <div className="container h-full rounded-lg inset-shadow-xs inset-shadow-white/25 shadow-[0px_2px_2px] shadow-black/25 p-4 bg-gradient-to-t from-gradientcontainer-100/50 to-basecontainer-100/50">
+                    {content}
+                </div>
+            </DashboardLayout>
+            {/* <div className="w-full h-full max-w-10xl p-8 mx-auto flex flex-col gap-8">
+                <Dashboard titulo="Doações" dados={doacoes} isLoading={isLoading} data={stats!}>
                     <Button name="Criar" onClick={() => { setModalAberto('inserir'); }}>Inserir</Button>
                     {queryString.length > 0 ? <Button name="Procurar" onClick={() => setFiltrosAtivos({})}>Limpar filtros</Button> :
                         <Button name="Procurar" onClick={() => setModalAberto('procurar')}>Procurar</Button>}
@@ -119,7 +143,7 @@ const DoacaoPage = () => {
                 <div className="container h-full rounded-lg inset-shadow-xs inset-shadow-white/25 shadow-[0px_2px_2px] shadow-black/25 p-4 bg-gradient-to-t from-gradientcontainer-100/50 to-basecontainer-100/50">
                     {content}
                 </div>
-            </div>
+            </div> */}
             <Modal
                 isOpen={openDetalhes ? true : false}
                 onClose={() => setOpenDetalhes(null)}

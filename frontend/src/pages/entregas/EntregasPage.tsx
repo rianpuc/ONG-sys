@@ -15,6 +15,9 @@ import FilterEntregasForm from "./FilterEntregasForm";
 import InsertEntregasForm from "./InsertEntregasForm";
 import UpdateEntregasForm from "./UpdateEntregasForm";
 import Dashboard from "../../components/layout/Dashboard";
+import DashboardLayout from "../../components/layout/DashboardLayout";
+import SimpleStatsCard from "../../components/card/SimpleStatsCard";
+import type { EntregaStats } from "../../interface/EntregaStats";
 
 const EntregasPage = () => {
     const [modalAberto, setModalAberto] = useState<string | null>(null);
@@ -25,6 +28,7 @@ const EntregasPage = () => {
     const [receptorRefetchTrigger, setReceptorRefetchTrigger] = useState(0);
     const [itemRefetchTrigger, setItemRefetchTrigger] = useState(0);
     const [refetchTrigger, setRefetchTrigger] = useState(0);
+    const [balancoMensalOpen, setBalancoMensalOpen] = useState(false);
 
     const columns = [
         { header: 'Data da Entrega', render: (entrega: Entrega) => formatarDataParaExibicao(entrega.Data_Entrega) },
@@ -64,6 +68,8 @@ const EntregasPage = () => {
     const { data: receptores } = useFetch<Receptor[]>(`/receptor?trigger=${receptorRefetchTrigger}`);
     const { data: eventos } = useFetch<Evento[]>(`/evento?trigger=${eventoRefetchTrigger}`);
     const { data: itens } = useFetch<Item[]>(`/item?trigger=${itemRefetchTrigger}`);
+    /* FETCH PARA STATS */
+    const { data: stats, isLoading: isLoadingStats } = useFetch<EntregaStats>(`/stats/entrega?trigger=${refetchTrigger}`);
     const handleApplyFiltro = (novosFiltros: EntregaFiltro) => {
         setFiltrosAtivos(novosFiltros);
         setModalAberto(null);
@@ -113,18 +119,28 @@ const EntregasPage = () => {
                 <UpdateEntregasForm eventos={eventos!} receptores={receptores!} itens={itens!} selectedEntrega={selectedEntrega!} onEventoCreated={handleEventoCreated}
                     onReceptorCreated={handleReceptorCreated} onItemCreated={handleItemCreated} onSuccess={() => { setModalAberto(null); setRefetchTrigger(prev => prev + 1); }} />
             </Modal>
-            <div className="w-full h-full max-w-10xl p-8 mx-auto flex flex-col gap-8">
-                <Dashboard titulo="Entregas" dados={entregas} isLoading={isLoading}>
+            <DashboardLayout>
+                <div className="grid grid-cols-12 gap-4 rounded-lg inset-shadow-xs inset-shadow-white/25 p-3 bg-gradient-to-t from-basecontainer-100 to-buttonscontainer-100 shadow-[0px_2px_2px] shadow-black/25">
+                    <SimpleStatsCard titulo="Entregas" valor={entregas?.length!} isLoading={isLoading} span={4}></SimpleStatsCard>
+                    <div className={`bg-blue-500 rounded-lg p-6 col-span-4 row-span-4 flex flex-col items-start`}>
+                        <span className="text-2xl font-thin">Entregas realizadas</span>
+                        <span className="text-6xl font-black">{isLoadingStats ? "..." : stats?.entregasRealizadas}</span>
+                        <span className="text-blue-200">nos últimos 30 dias</span>
+                    </div>
+                    <div onClick={() => setBalancoMensalOpen(true)} className={`bg-blue-500 rounded-lg p-6 col-span-4 row-span-4 flex flex-col justify-center items-start cursor-pointer`}>
+                        <span className="text-4xl font-black">Balanço</span>
+                        <span className="text-blue-200">nos últimos 30 dias</span>
+                    </div>
                     <Button name="Criar" onClick={() => { setModalAberto('inserir'); }}>Inserir</Button>
                     {queryString.length > 0 ? <Button name="Procurar" onClick={() => setFiltrosAtivos({})}>Limpar filtros</Button> :
                         <Button name="Procurar" onClick={() => setModalAberto('procurar')}>Procurar</Button>}
                     <Button name="Atualizar" disabled={selectedEntrega ? false : true} onClick={() => { setModalAberto('atualizar'); }}>Atualizar</Button>
                     <Button name="Deletar" disabled={selectedEntrega ? false : true} onClick={handleDeleteClick}>Deletar</Button>
-                </Dashboard>
+                </div>
                 <div className="container h-full rounded-lg inset-shadow-xs inset-shadow-white/25 shadow-[0px_2px_2px] shadow-black/25 p-4 bg-gradient-to-t from-gradientcontainer-100/50 to-basecontainer-100/50">
                     {content}
                 </div>
-            </div>
+            </DashboardLayout>
             <Modal
                 isOpen={openDetalhes ? true : false}
                 onClose={() => setOpenDetalhes(null)}
@@ -144,6 +160,55 @@ const EntregasPage = () => {
                                 </li>
                             ))}
                         </ul>
+                    </div>
+                )}
+            </Modal>
+            <Modal
+                isOpen={balancoMensalOpen ? true : false}
+                onClose={() => setBalancoMensalOpen(false)}
+                title={`Balanço Mensal`}
+            >
+                {balancoMensalOpen && (
+                    <div className="bg-gradientcontainer-100/20 border border border-secondrow-100/20 rounded-md">
+                        <table className="w-full text-left table-auto min-w-max">
+                            <thead>
+                                <tr className="bg-secondrow-100/20">
+                                    <th className="p-4">
+                                        <p className="block font-sans text-center text-sm antialiased font-normal leading-none text-blue-gray-900 opacity-70">
+                                            Nome do Item</p>
+                                    </th>
+                                    <th className="p-4">
+                                        <p className="block font-sans text-center text-sm antialiased font-normal leading-none text-blue-gray-900 opacity-70">
+                                            Quantidade Doada</p>
+                                    </th>
+                                    <th className="p-4">
+                                        <p className="block font-sans text-center text-sm antialiased font-normal leading-none text-blue-gray-900 opacity-70">
+                                            Quantidade Entregue</p>
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {stats?.balancoMensal.map((item, index) => (
+                                    <tr key={item.Nome_Item} className={`${index % 2 === 0 ? '' : 'bg-secondrow-100/20'}`}>
+                                        <td className="p-4">
+                                            <p className="block font-sans text-center text-sm antialiased font-normal leading-normal text-blue-gray-900">
+                                                {item.Nome_Item}
+                                            </p>
+                                        </td>
+                                        <td className="p-4">
+                                            <p className="block font-sans text-center text-sm antialiased font-normal leading-normal text-blue-gray-900">
+                                                {item.Quantidade_Doada}
+                                            </p>
+                                        </td>
+                                        <td className="p-4">
+                                            <p className="block font-sans text-center text-sm antialiased font-normal leading-normal text-blue-gray-900">
+                                                {item.Quantidade_Entregue}
+                                            </p>
+                                        </td>
+                                    </tr>
+                                ))}
+                            </tbody>
+                        </table>
                     </div>
                 )}
             </Modal>

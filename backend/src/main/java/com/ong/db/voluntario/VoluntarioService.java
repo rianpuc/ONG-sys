@@ -28,6 +28,7 @@ public class VoluntarioService {
         if (instituicaoID != null) {
             spec = spec.and(temInstituicao(instituicaoID));
         }
+        spec = spec.and(isAtivo(true));
         List<VoluntarioResponseDTO> voluntarios = repository.findAll(spec).stream().map(VoluntarioResponseDTO::new)
                 .toList();
         return voluntarios;
@@ -41,6 +42,7 @@ public class VoluntarioService {
         novoVoluntario.setCPF(dados.CPF());
         novoVoluntario.setFuncao(dados.Funcao());
         novoVoluntario.setInstituicao(instituicao);
+        novoVoluntario.setStatus(true);
         Voluntario voluntarioSalvo = repository.save(novoVoluntario);
         return new VoluntarioResponseDTO(voluntarioSalvo);
     }
@@ -53,6 +55,7 @@ public class VoluntarioService {
         voluntario.setNome(dados.Nome());
         voluntario.setFuncao(dados.Funcao());
         voluntario.setInstituicao(instituicao);
+        voluntario.setStatus(true);
         Voluntario novoVoluntario = repository.save(voluntario);
         return new VoluntarioResponseDTO(novoVoluntario);
     }
@@ -61,7 +64,13 @@ public class VoluntarioService {
         if (!repository.existsById(CPF)) {
             throw new RuntimeException("Voluntário não encontrado, impossível deletar!");
         }
-        repository.deleteById(CPF);
+        Voluntario voluntario = repository.findById(CPF).get();
+        voluntario.setStatus(false);
+        repository.save(voluntario);
+    }
+
+    private Specification<Voluntario> isAtivo(boolean b) {
+        return (root, query, cb) -> cb.equal(root.get("Status"), b);
     }
 
     private static Specification<Voluntario> temNome(String nome) {

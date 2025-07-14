@@ -1,5 +1,7 @@
 package com.ong.db.receptor;
 
+import java.time.LocalDate;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
@@ -25,4 +27,8 @@ public class Receptor {
     private String Nome;
     @Column(name = "Endereco")
     private String Endereco;
+    @Column(name = "Status")
+    private boolean Status;
+    @Column(name = "Criado")
+    private LocalDate Criado;
 }
