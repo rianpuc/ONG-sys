@@ -7,6 +7,7 @@ import useMutation from '../../hooks/useMutation';
 interface VoluntarioFormProps {
     instituicoes: Instituicao[];
     onSuccess: () => void;
+    onError: () => void;
 }
 
 const InsertVoluntariosForm = ({ instituicoes, onSuccess }: VoluntarioFormProps) => {
@@ -26,10 +27,9 @@ const InsertVoluntariosForm = ({ instituicoes, onSuccess }: VoluntarioFormProps)
         };
         try {
             await criarVoluntario(novoVoluntario);
-            alert('Voluntário cadastrado com sucesso!');
             onSuccess();
         } catch (err) {
-            console.error("Falha ao criar voluntário:", err);
+            console.error(err);
         }
     };
 

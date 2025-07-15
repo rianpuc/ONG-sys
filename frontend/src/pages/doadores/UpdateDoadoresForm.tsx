@@ -7,9 +7,10 @@ import MaskedInput from '../../components/ui/MaskedInput';
 interface DoadorFormProps {
     selectedDoador: Doador;
     onSuccess: () => void;
+    onError: () => void;
 }
 
-const UpdateDoadoresForm = ({ selectedDoador, onSuccess }: DoadorFormProps) => {
+const UpdateDoadoresForm = ({ selectedDoador, onSuccess, onError }: DoadorFormProps) => {
     const [nome, setNome] = useState(selectedDoador.Nome_Doador);
     const [cpf, setCpf] = useState(selectedDoador.CPF as string | '');
     const [cnpj, setCnpj] = useState(selectedDoador.CNPJ as string | '');
@@ -27,10 +28,10 @@ const UpdateDoadoresForm = ({ selectedDoador, onSuccess }: DoadorFormProps) => {
         };
         try {
             await atualizarDoador(updatedDoador, selectedDoador.ID_Doador);
-            alert('Doador atualizado com sucesso!');
             onSuccess();
         } catch (err) {
-            console.error("Falha ao atualizar doador:", err);
+            onError();
+            console.error(err);
         }
     };
 

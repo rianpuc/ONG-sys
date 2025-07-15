@@ -28,6 +28,8 @@ interface EntregaOption {
 // Definindo as props que o formulário recebe
 interface UpdateFormProps {
     onSuccess: () => void;
+    onError: () => void;
+    onWarn: (mensagem: string) => void;
     onEventoCreated: () => void;
     onReceptorCreated: () => void;
     onItemCreated: () => void;
@@ -37,7 +39,7 @@ interface UpdateFormProps {
     itens: Item[];
 }
 
-const UpdateEntregasForm = ({ onSuccess, onEventoCreated, onReceptorCreated, onItemCreated, selectedEntrega, eventos, receptores, itens }: UpdateFormProps) => {
+const UpdateEntregasForm = ({ onSuccess, onError, onWarn, onEventoCreated, onReceptorCreated, onItemCreated, selectedEntrega, eventos, receptores, itens }: UpdateFormProps) => {
 
     const [subModalAberto, setSubModalAberto] = useState<null | 'novoEvento' | 'novoReceptor' | 'novoItem'>(null);
     const [reutilizar, setReutilizar] = useState('');
@@ -67,12 +69,12 @@ const UpdateEntregasForm = ({ onSuccess, onEventoCreated, onReceptorCreated, onI
         e.preventDefault(); // Impede o recarregamento da página
         const itemInvalido = itensEntrega.some(item => item.ID_Item === '');
         if (itemInvalido) {
-            alert('Por favor, selecione um item válido para todas as linhas.');
+            onWarn('Por favor, selecione um item válido para todas as linhas.');
             return
         }
         const eventoSelecionado = eventos.find(evento => evento.ID_Evento === Number(eventoID));
         if (!eventoSelecionado) {
-            alert('Erro: O evento selecionado é inválido. Por favor, recarregue a página.');
+            onWarn('Erro: O evento selecionado é inválido. Por favor, recarregue a página.');
             return;
         }
         const hojeObjeto = new Date();
@@ -81,10 +83,10 @@ const UpdateEntregasForm = ({ onSuccess, onEventoCreated, onReceptorCreated, onI
         const dia = String(hojeObjeto.getDate()).padStart(2, '0');
         const hojeFormatado = `${ano}-${mes}-${dia}`;
         const dataDoEventoString = eventoSelecionado.Data.toString().split('T')[0];
-        // if (dataDoEventoString > hojeFormatado) {
-        //     alert("Não é possível registrar uma entrega para um evento que ainda não aconteceu!");
-        //     return;
-        // }
+        if (dataDoEventoString > hojeFormatado) {
+            onWarn("Não é possível registrar uma entrega para um evento que ainda não aconteceu!");
+            return;
+        }
         const novaEntrega = {
             Data: eventoSelecionado.Data,
             Evento: Number(eventoID),
@@ -96,10 +98,10 @@ const UpdateEntregasForm = ({ onSuccess, onEventoCreated, onReceptorCreated, onI
         };
         try {
             await criarEntrega(novaEntrega, selectedEntrega.ID_Entrega);
-            alert("Entrega registrada com sucesso!");
             onSuccess();
         } catch (err) {
-            console.error("Falha ao criar entrega:", err);
+            onError();
+            console.error(err);
         }
     };
 

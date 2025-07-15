@@ -9,6 +9,7 @@ import Modal from "../../components/ui/Modal";
 import InsertItensForm from "./InsertItensForm";
 import FilterItensForm from "./FilterItensForm";
 import UpdateItensForm from "./UpdateItensForm";
+import { Bounce, ToastContainer, toast } from 'react-toastify';
 import DashboardLayout from "../../components/layout/DashboardLayout";
 import SimpleStatsCard from "../../components/card/SimpleStatsCard";
 import type { ItemStats } from "../../interface/ItemStats";
@@ -18,6 +19,7 @@ const columns = [
     { header: 'Tipo', accessor: 'Tipo_Item' as const },
     { header: 'Quantidade', accessor: 'Quantidade_Atual' as const }
 ];
+
 
 const ItensPage = () => {
     /* DECLARACAO USESTATES */
@@ -40,6 +42,7 @@ const ItensPage = () => {
     const titleDoado = stats?.maisDoado.length! > 1 ? "Itens mais doados" : "Item mais doado";
     const titleEntregue = stats?.maisEntregue.length! > 1 ? "Itens mais entregues" : "Item mais entregue";
     const titleEstoque = stats?.menoresItensEmEstoque.length! > 1 ? "Menores itens em estoque" : "Menor item em estoque";
+    console.log(stats);
     const handleApplyFiltro = (novosFiltros: ItemFiltro) => {
         setFiltrosAtivos(novosFiltros);
         setModalAberto(null);
@@ -54,11 +57,12 @@ const ItensPage = () => {
     const handleDeleteClick = async () => {
         try {
             await deletarItem(null, selectedItem?.ID_Item);
-            alert("Item deletado com sucesso!");
+            toast.success("Item deletado com sucesso!");
             setRefetchTrigger(prev => prev + 1);
             setSelectedItem(null);
         } catch (err) {
-            console.error("Falha ao deletar item:", err);
+            toast.error("Falha ao deletar item");
+            console.error(err);
         }
     }
     let content;
@@ -77,15 +81,16 @@ const ItensPage = () => {
         <>
             <title>Itens</title>
             <Modal isOpen={modalAberto === 'inserir'} onClose={() => setModalAberto(null)} title="Adicionar Novo Item">
-                <InsertItensForm onSuccess={() => { setModalAberto(null); setRefetchTrigger(prev => prev + 1); }} />
+                <InsertItensForm onSuccess={() => { setModalAberto(null); setRefetchTrigger(prev => prev + 1); toast.success("Item cadastrado com sucesso!"); }}
+                    onError={() => { toast.error("Falha ao criar item") }} />
             </Modal>
             <Modal isOpen={modalAberto === 'procurar'} onClose={() => setModalAberto(null)} title="Buscar Itens">
                 <FilterItensForm onAplicarFiltros={handleApplyFiltro} />
             </Modal>
             <Modal isOpen={modalAberto === 'atualizar'} onClose={() => setModalAberto(null)} title="Atualizar Item">
-                <UpdateItensForm selectedItem={selectedItem!} onSuccess={() => {
+                <UpdateItensForm selectedItem={selectedItem!} onError={() => { toast.error("Falha ao atualizar item") }} onSuccess={() => {
                     setModalAberto(null); setRefetchTrigger(prev => prev + 1);
-                    setSelectedItem(null);
+                    setSelectedItem(null); toast.success("Item atualizado com sucesso!");
                 }} />
             </Modal>
             <DashboardLayout>
@@ -122,75 +127,92 @@ const ItensPage = () => {
             <Modal isOpen={modalAberto === 'maisDoados'} onClose={() => setModalAberto(null)} title={titleDoado}>
                 {stats?.maisDoado &&
                     <div className="bg-gradientcontainer-100/20 border border border-secondrow-100/20 rounded-md">
-                        <table className="w-full text-left table-auto min-w-max">
-                            <thead>
-                                <tr className="bg-secondrow-100/20">
-                                    <th className="p-4">
-                                        <p className="block font-sans text-center text-sm antialiased font-normal leading-none text-blue-gray-900 opacity-70">
-                                            Nome do Item</p>
-                                    </th>
-                                    <th className="p-4">
-                                        <p className="block font-sans text-center text-sm antialiased font-normal leading-none text-blue-gray-900 opacity-70">
-                                            Quantidade Doada</p>
-                                    </th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {stats?.maisDoado.map((item, index) => (
-                                    <tr key={item.nomeItem} className={`${index % 2 === 0 ? '' : 'bg-secondrow-100/20'}`}>
-                                        <td className="p-4">
-                                            <p className="block font-sans text-center text-sm antialiased font-normal leading-normal text-blue-gray-900">
-                                                {item.nomeItem}
-                                            </p>
-                                        </td>
-                                        <td className="p-4">
-                                            <p className="block font-sans text-center text-sm antialiased font-normal leading-normal text-blue-gray-900">
-                                                {item.quantidadeTotal}
-                                            </p>
-                                        </td>
+                        <div className="overflow-y-scroll overflow-x-hidden max-h-80 rounded-md">
+                            <table className="w-full text-left table-auto">
+                                <thead>
+                                    <tr className="bg-secondrow-100/20">
+                                        <th className="p-4">
+                                            <p className="block font-sans text-center text-sm antialiased font-normal leading-none text-blue-gray-900 opacity-70">
+                                                Nome do Item</p>
+                                        </th>
+                                        <th className="p-4">
+                                            <p className="block font-sans text-center text-sm antialiased font-normal leading-none text-blue-gray-900 opacity-70">
+                                                Quantidade Doada</p>
+                                        </th>
                                     </tr>
-                                ))}
-                            </tbody>
-                        </table>
+                                </thead>
+                                <tbody>
+                                    {stats?.maisDoado.map((item, index) => (
+                                        <tr key={item.nomeItem} className={`${index % 2 === 0 ? '' : 'bg-secondrow-100/20'}`}>
+                                            <td className="p-4">
+                                                <p className="block font-sans text-center text-sm antialiased font-normal leading-normal text-blue-gray-900">
+                                                    {item.nomeItem}
+                                                </p>
+                                            </td>
+                                            <td className="p-4">
+                                                <p className="block font-sans text-center text-sm antialiased font-normal leading-normal text-blue-gray-900">
+                                                    {item.quantidadeTotal}
+                                                </p>
+                                            </td>
+                                        </tr>
+                                    ))}
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
                 }
             </Modal>
             <Modal isOpen={modalAberto === 'maisEntregues'} onClose={() => setModalAberto(null)} title={titleEntregue}>
                 {stats?.maisEntregue &&
                     <div className="bg-gradientcontainer-100/20 border border border-secondrow-100/20 rounded-md">
-                        <table className="w-full text-left table-auto min-w-max">
-                            <thead>
-                                <tr className="bg-secondrow-100/20">
-                                    <th className="p-4">
-                                        <p className="block font-sans text-center text-sm antialiased font-normal leading-none text-blue-gray-900 opacity-70">
-                                            Nome do Item</p>
-                                    </th>
-                                    <th className="p-4">
-                                        <p className="block font-sans text-center text-sm antialiased font-normal leading-none text-blue-gray-900 opacity-70">
-                                            Quantidade Entregue</p>
-                                    </th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {stats?.maisEntregue.map((item, index) => (
-                                    <tr key={item.nomeItem} className={`${index % 2 === 0 ? '' : 'bg-secondrow-100/20'}`}>
-                                        <td className="p-4">
-                                            <p className="block font-sans text-center text-sm antialiased font-normal leading-normal text-blue-gray-900">
-                                                {item.nomeItem}
-                                            </p>
-                                        </td>
-                                        <td className="p-4">
-                                            <p className="block font-sans text-center text-sm antialiased font-normal leading-normal text-blue-gray-900">
-                                                {item.quantidadeTotal}
-                                            </p>
-                                        </td>
+                        <div className="overflow-y-scroll overflow-x-hidden max-h-80 rounded-md">
+                            <table className="w-full text-left table-auto">
+                                <thead>
+                                    <tr className="bg-secondrow-100/20">
+                                        <th className="p-4">
+                                            <p className="block font-sans text-center text-sm antialiased font-normal leading-none text-blue-gray-900 opacity-70">
+                                                Nome do Item</p>
+                                        </th>
+                                        <th className="p-4">
+                                            <p className="block font-sans text-center text-sm antialiased font-normal leading-none text-blue-gray-900 opacity-70">
+                                                Quantidade Entregue</p>
+                                        </th>
                                     </tr>
-                                ))}
-                            </tbody>
-                        </table>
+                                </thead>
+                                <tbody>
+                                    {stats?.maisEntregue.map((item, index) => (
+                                        <tr key={item.nomeItem} className={`${index % 2 === 0 ? '' : 'bg-secondrow-100/20'}`}>
+                                            <td className="p-4">
+                                                <p className="block font-sans text-center text-sm antialiased font-normal leading-normal text-blue-gray-900">
+                                                    {item.nomeItem}
+                                                </p>
+                                            </td>
+                                            <td className="p-4">
+                                                <p className="block font-sans text-center text-sm antialiased font-normal leading-normal text-blue-gray-900">
+                                                    {item.quantidadeTotal}
+                                                </p>
+                                            </td>
+                                        </tr>
+                                    ))}
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
                 }
             </Modal>
+            <ToastContainer
+                position="bottom-center"
+                autoClose={3000}
+                hideProgressBar={false}
+                newestOnTop={false}
+                closeOnClick
+                rtl={false}
+                pauseOnFocusLoss
+                draggable
+                pauseOnHover
+                theme="colored"
+                transition={Bounce}
+            />
         </>
     )
 }

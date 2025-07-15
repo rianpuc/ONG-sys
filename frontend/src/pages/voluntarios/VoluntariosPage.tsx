@@ -11,9 +11,45 @@ import InsertVoluntariosForm from "./InsertVoluntariosForm";
 import FilterVoluntariosForm from "./FilterVoluntariosForm";
 import UpdateVoluntariosForm from "./UpdateVoluntariosForm";
 import useMutation from "../../hooks/useMutation";
+import { PieChart, Pie, Tooltip, ResponsiveContainer, Cell } from 'recharts'
+import { Bounce, ToastContainer, toast } from 'react-toastify';
 import DashboardLayout from "../../components/layout/DashboardLayout";
 import SimpleStatsCard from "../../components/card/SimpleStatsCard";
 import type { VoluntarioStats } from "../../interface/VoluntarioStats";
+
+type TooltipPayload = ReadonlyArray<any>;
+
+type Coordinate = {
+    x: number;
+    y: number;
+};
+
+type PieSectorData = {
+    percent?: number;
+    name?: string | number;
+    midAngle?: number;
+    middleRadius?: number;
+    tooltipPosition?: Coordinate;
+    value?: number;
+    paddingAngle?: number;
+    dataKey?: string;
+    payload?: any;
+    tooltipPayload?: ReadonlyArray<TooltipPayload>;
+};
+
+type GeometrySector = {
+    cx: number;
+    cy: number;
+    innerRadius: number;
+    outerRadius: number;
+    startAngle: number;
+    endAngle: number;
+};
+
+type PieLabelProps = PieSectorData &
+    GeometrySector & {
+        tooltipPayload?: any;
+    };
 
 const columns = [
     { header: 'Identificação', render: (voluntario: Voluntario) => { return formatIdentificacao(voluntario.CPF, "fisica") } },
@@ -21,6 +57,36 @@ const columns = [
     { header: 'Função', accessor: 'Funcao' as const },
     { header: 'Instituição', accessor: 'nomeInstituicao' as const }
 ]
+
+const RADIAN = Math.PI / 180;
+const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042'];
+
+const renderCustomizedLabel = ({ cx, cy, midAngle, innerRadius, outerRadius, percent }: PieLabelProps) => {
+    const radius = innerRadius + (outerRadius - innerRadius) * 0.5;
+    const x = cx + radius * Math.cos(-(midAngle ?? 0) * RADIAN);
+    const y = cy + radius * Math.sin(-(midAngle ?? 0) * RADIAN);
+
+    return (
+        <text x={x} y={y} fill="white" textAnchor={x > cx ? 'start' : 'end'} dominantBaseline="central">
+            {`${((percent ?? 1) * 100).toFixed(0)}%`}
+        </text>
+    );
+};
+
+const CustomTooltip = ({ active, payload, label }: any) => {
+    console.log(payload);
+    const isVisible = active && payload && payload.length;
+    return (
+        <div className="bg-white/80 rounded-md p-4 text-black" style={{ visibility: isVisible ? 'visible' : 'hidden' }}>
+            {isVisible && (
+                <>
+                    <p className="">{`${payload[0].payload.nomeFuncao}`}</p>
+                    <p className="">Quantidade: {`${payload[0].value}`}</p>
+                </>
+            )}
+        </div>
+    );
+};
 
 const VoluntariosPage = () => {
     /* DECLARACAO DE USESTATES */
@@ -57,11 +123,12 @@ const VoluntariosPage = () => {
     const handleDeleteClick = async () => {
         try {
             await deletarVoluntario(null, selectedVoluntario?.CPF);
-            alert("Voluntário deletado com sucesso!");
+            toast.success("Voluntário deletado com sucesso!");
             setRefetchTrigger(prev => prev + 1);
             setSelectedVoluntario(null);
         } catch (err) {
-            console.error("Falha ao deletar voluntário:", err);
+            toast.error("Falha ao deletar voluntário")
+            console.error(err);
         }
     }
     let content;
@@ -82,16 +149,18 @@ const VoluntariosPage = () => {
         <>
             <title>Voluntários</title>
             <Modal isOpen={modalAberto === 'inserir'} onClose={() => setModalAberto(null)} title="Adicionar Novo Voluntário">
-                <InsertVoluntariosForm instituicoes={instituicoes || []} onSuccess={() => { setModalAberto(null); setRefetchTrigger(prev => prev + 1); }} />
+                <InsertVoluntariosForm instituicoes={instituicoes || []} onError={() => { toast.error("Falha ao criar voluntário") }}
+                    onSuccess={() => { setModalAberto(null); setRefetchTrigger(prev => prev + 1); toast.success("Voluntário cadastrado com sucesso!") }} />
             </Modal>
             <Modal isOpen={modalAberto === 'procurar'} onClose={() => setModalAberto(null)} title="Buscar Voluntários">
                 <FilterVoluntariosForm onAplicarFiltros={handleApplyFiltro} instituicoes={instituicoes || []} />
             </Modal>
             <Modal isOpen={modalAberto === 'atualizar'} onClose={() => setModalAberto(null)} title="Atualizar Voluntário">
-                <UpdateVoluntariosForm selectedVoluntario={selectedVoluntario!} onSuccess={() => {
-                    setModalAberto(null); setRefetchTrigger(prev => prev + 1);
-                    setSelectedVoluntario(null)
-                }} instituicoes={instituicoes || []} />
+                <UpdateVoluntariosForm selectedVoluntario={selectedVoluntario!} onError={() => { toast.error("Falha ao atualizar voluntário") }}
+                    onSuccess={() => {
+                        setModalAberto(null); setRefetchTrigger(prev => prev + 1);
+                        setSelectedVoluntario(null); toast.success("Voluntário atualizado com sucesso!")
+                    }} instituicoes={instituicoes || []} />
             </Modal>
             <DashboardLayout>
                 <div className="grid grid-cols-12 gap-4 rounded-lg inset-shadow-xs inset-shadow-white/25 p-3 bg-gradient-to-t from-basecontainer-100 to-buttonscontainer-100 shadow-[0px_2px_2px] shadow-black/25">
@@ -112,40 +181,43 @@ const VoluntariosPage = () => {
             </DashboardLayout>
             <Modal isOpen={modalAberto === 'voluntariosFuncao'} onClose={() => setModalAberto(null)} title="Voluntários por Função">
                 {stats?.voluntariosPorFuncao &&
-                    <div className="bg-gradientcontainer-100/20 border border border-secondrow-100/20 rounded-md">
-                        <table className="w-full text-left table-auto min-w-max">
-                            <thead>
-                                <tr className="bg-secondrow-100/20">
-                                    <th className="p-4">
-                                        <p className="block font-sans text-center text-sm antialiased font-normal leading-none text-blue-gray-900 opacity-70">
-                                            Função</p>
-                                    </th>
-                                    <th className="p-4">
-                                        <p className="block font-sans text-center text-sm antialiased font-normal leading-none text-blue-gray-900 opacity-70">
-                                            Voluntários</p>
-                                    </th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {stats?.voluntariosPorFuncao.map((item, index) => (
-                                    <tr key={item.nomeFuncao} className={`${index % 2 === 0 ? '' : 'bg-secondrow-100/20'}`}>
-                                        <td className="p-4">
-                                            <p className="block font-sans text-center text-sm antialiased font-normal leading-normal text-blue-gray-900">
-                                                {item.nomeFuncao}
-                                            </p>
-                                        </td>
-                                        <td className="p-4">
-                                            <p className="block font-sans text-center text-sm antialiased font-normal leading-normal text-blue-gray-900">
-                                                {item.quantidade}
-                                            </p>
-                                        </td>
-                                    </tr>
-                                ))}
-                            </tbody>
-                        </table>
+                    <div className="bg-gradientcontainer-100/20 border border-secondrow-100/20 rounded-md">
+                        <div className="rounded-md">
+                            <ResponsiveContainer width="100%" height={400}>
+                                <PieChart width={400} height={400}>
+                                    <Tooltip content={CustomTooltip} />
+                                    <Pie
+                                        data={stats.voluntariosPorFuncao}
+                                        cx="50%"
+                                        cy="50%"
+                                        labelLine={false}
+                                        label={renderCustomizedLabel}
+                                        outerRadius={80}
+                                        dataKey="quantidade"
+                                    >
+                                        {stats.voluntariosPorFuncao.map((entry, index) => (
+                                            <Cell key={`cell-${entry.nomeFuncao}`} fill={COLORS[index % COLORS.length]} />
+                                        ))}
+                                    </Pie>
+                                </PieChart>
+                            </ResponsiveContainer>
+                        </div>
                     </div>
                 }
             </Modal>
+            <ToastContainer
+                position="bottom-center"
+                autoClose={3000}
+                hideProgressBar={false}
+                newestOnTop={false}
+                closeOnClick
+                rtl={false}
+                pauseOnFocusLoss
+                draggable
+                pauseOnHover
+                theme="colored"
+                transition={Bounce}
+            />
         </>
     )
 }

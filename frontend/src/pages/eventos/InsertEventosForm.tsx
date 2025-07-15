@@ -7,9 +7,10 @@ interface EventoFormProps {
     name?: string;
     instituicoes: Instituicao[];
     onSuccess: () => void;
+    onError: () => void;
 }
 
-const InsertEventosForm = ({ name, instituicoes, onSuccess }: EventoFormProps) => {
+const InsertEventosForm = ({ name, instituicoes, onSuccess, onError }: EventoFormProps) => {
     const [local, setLocal] = useState(name ? name : '');
     const [data, setData] = useState('');
     const [selectedInstituicaoId, setSelectedInstituicaoId] = useState('');
@@ -23,10 +24,10 @@ const InsertEventosForm = ({ name, instituicoes, onSuccess }: EventoFormProps) =
         };
         try {
             await criarEvento(novoEvento);
-            alert('Evento cadastrado com sucesso!');
             onSuccess();
         } catch (err) {
-            console.error("Falha ao criar evento:", err);
+            onError()
+            console.error(err);
         }
     };
 

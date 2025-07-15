@@ -6,6 +6,12 @@
 @tailwind components;
 @tailwind utilities;
 
+:root {
+    overflow: hidden;
+    overflow-y: hidden;
+    overflow-x: hidden;
+}
+
 .bg {
     background-color: #0a0e1b;
     background-image:
@@ -64,4 +70,13 @@
     --color-modal-100: oklch(0.5793 0.1803 271.08);
     --color-inputfield-100: oklch(0.2926 0.0888 276.82);
     --color-inputoption-100: oklch(0.373 0.1408 274.72);
+}
+
+.recharts-pie-sector:focus,
+.recharts-pie-sector>g:focus,
+.recharts-pie-sector>g>g:focus {
+    outline: none !important;
+    outline-color: none;
+    outline-style: none;
+    outline-width: none;
 }

@@ -5,10 +5,11 @@ import useMutation from '../../hooks/useMutation';
 // O formulário recebe a lista de instituições e uma função para fechar o modal no sucesso
 interface DoadorFormProps {
     onSuccess: () => void;
+    onError: () => void;
     name?: string;
 }
 
-const InsertReceptoresForm = ({ onSuccess, name }: DoadorFormProps) => {
+const InsertReceptoresForm = ({ onSuccess, onError, name }: DoadorFormProps) => {
     const [nome, setNome] = useState(name ? name : '');
     const [tipo, setTipo] = useState('Fisica');
     const [cpf, setCpf] = useState('');
@@ -26,10 +27,10 @@ const InsertReceptoresForm = ({ onSuccess, name }: DoadorFormProps) => {
         };
         try {
             await criarDoador(novoDoador);
-            alert('Doador cadastrado com sucesso!');
             onSuccess();
         } catch (err) {
-            console.error("Falha ao criar doador:", err);
+            onError();
+            console.error(err);
         }
     };
 

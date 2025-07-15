@@ -6,9 +6,10 @@ import type { Item } from '../../interface/Item';
 interface ItemFormProps {
     selectedItem: Item;
     onSuccess: () => void;
+    onError: () => void;
 }
 
-const UpdateReceptoresForm = ({ selectedItem, onSuccess }: ItemFormProps) => {
+const UpdateReceptoresForm = ({ selectedItem, onSuccess, onError }: ItemFormProps) => {
     const [nome, setNome] = useState(selectedItem.Nome_Item);
     const [tipo, setTipo] = useState(selectedItem.Tipo_Item);
     const [quantidade, setQuantidade] = useState(selectedItem.Quantidade_Atual);
@@ -22,10 +23,10 @@ const UpdateReceptoresForm = ({ selectedItem, onSuccess }: ItemFormProps) => {
         };
         try {
             await atualizarItem(updatedItem, selectedItem.ID_Item);
-            alert('Item atualizado com sucesso!');
             onSuccess();
         } catch (err) {
-            console.error("Falha ao atualizar item:", err);
+            onError();
+            console.error(err);
         }
     };
 

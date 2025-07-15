@@ -14,10 +14,26 @@ import type { Item } from "../../interface/Item";
 import FilterEntregasForm from "./FilterEntregasForm";
 import InsertEntregasForm from "./InsertEntregasForm";
 import UpdateEntregasForm from "./UpdateEntregasForm";
-import Dashboard from "../../components/layout/Dashboard";
+import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer } from 'recharts'
+import { Bounce, ToastContainer, toast } from 'react-toastify';
 import DashboardLayout from "../../components/layout/DashboardLayout";
 import SimpleStatsCard from "../../components/card/SimpleStatsCard";
 import type { EntregaStats } from "../../interface/EntregaStats";
+
+const CustomTooltip = ({ active, payload, label }: any) => {
+    const isVisible = active && payload && payload.length;
+    return (
+        <div className="bg-white/50 rounded-md p-4" style={{ visibility: isVisible ? 'visible' : 'hidden' }}>
+            {isVisible && (
+                <>
+                    <p className="text-white">{`${label}`}</p>
+                    <p className="">Quantidade doada: {`${payload[0].value}`} unid.</p>
+                    <p className="">Quantidade entregue: {`${payload[1].value}`} unid.</p>
+                </>
+            )}
+        </div>
+    );
+};
 
 const EntregasPage = () => {
     const [modalAberto, setModalAberto] = useState<string | null>(null);
@@ -110,14 +126,16 @@ const EntregasPage = () => {
             <title>Entregas</title>
             <Modal isOpen={modalAberto === 'inserir'} onClose={() => setModalAberto(null)} title="Adicionar Nova Entrega">
                 <InsertEntregasForm eventos={eventos!} itens={itens!} receptores={receptores!} onEventoCreated={handleEventoCreated} onItemCreated={handleItemCreated}
-                    onReceptorCreated={handleReceptorCreated} onSuccess={() => { setModalAberto(null); setRefetchTrigger(prev => prev + 1); }} />
+                    onError={() => { toast.error("Falha ao criar entrega") }} onWarn={(mensagem) => { toast.warn(mensagem) }}
+                    onReceptorCreated={handleReceptorCreated} onSuccess={() => { setModalAberto(null); setRefetchTrigger(prev => prev + 1); toast.success("Entrega registrada com sucesso!") }} />
             </Modal>
             <Modal isOpen={modalAberto === 'procurar'} onClose={() => setModalAberto(null)} title="Buscar Entregas">
                 <FilterEntregasForm eventos={eventos!} receptores={receptores!} itens={itens!} onAplicarFiltros={handleApplyFiltro} />
             </Modal>
             <Modal isOpen={modalAberto === 'atualizar'} onClose={() => setModalAberto(null)} title="Atualizar Entrega">
                 <UpdateEntregasForm eventos={eventos!} receptores={receptores!} itens={itens!} selectedEntrega={selectedEntrega!} onEventoCreated={handleEventoCreated}
-                    onReceptorCreated={handleReceptorCreated} onItemCreated={handleItemCreated} onSuccess={() => { setModalAberto(null); setRefetchTrigger(prev => prev + 1); }} />
+                    onError={() => { toast.error("Falha ao atualizar entrega") }} onWarn={(mensagem) => { toast.warn(mensagem) }}
+                    onReceptorCreated={handleReceptorCreated} onItemCreated={handleItemCreated} onSuccess={() => { setModalAberto(null); setRefetchTrigger(prev => prev + 1); toast.success("Entrega atualizada com sucesso!") }} />
             </Modal>
             <DashboardLayout>
                 <div className="grid grid-cols-12 gap-4 rounded-lg inset-shadow-xs inset-shadow-white/25 p-3 bg-gradient-to-t from-basecontainer-100 to-buttonscontainer-100 shadow-[0px_2px_2px] shadow-black/25">
@@ -144,74 +162,64 @@ const EntregasPage = () => {
             <Modal
                 isOpen={openDetalhes ? true : false}
                 onClose={() => setOpenDetalhes(null)}
-                title={`Detalhes da Doação #${openDetalhes?.ID_Entrega}`}
+                title={`Detalhes da Doação`}
+                id={`#${openDetalhes?.ID_Entrega}`}
             >
                 {openDetalhes && (
                     <div>
-                        <div className="flex flex-row justify-between mb-4">
+                        <div className="flex flex-row justify-between mb-4 p-4 rounded-md bg-secondrow-100/40">
                             <span><b>Receptor:</b> {openDetalhes.Receptor.Nome}</span>
                             <span><b>Data:</b> {formatarDataParaExibicao(openDetalhes.Data_Entrega)}</span>
                         </div>
-                        <h4 className="font-semibold text-lg mb-2 text-cyan-400">Itens Inclusos:</h4>
-                        <ul className="list-disc list-inside space-y-2 bg-gray-900 p-4 rounded-md">
-                            {openDetalhes.itensEntregues.map(item => (
-                                <li key={item.ID_Item}>
-                                    <span className="font-semibold">{item.Nome_Item}</span> - Quantidade: <span className="font-bold text-lg">{item.Quantidade}</span>
-                                </li>
-                            ))}
-                        </ul>
+                        <div className="bg-inputfield-100 p-4 rounded-md">
+                            <h4 className="font-semibold text-lg mb-2 text-cyan-400">Itens Inclusos:</h4>
+                            <div className="bg-modal-100/20 rounded-md overflow-y-scroll max-h-40">
+                                <ul className="list-disc list-inside space-y-2 p-4 rounded-md">
+                                    {openDetalhes.itensEntregues.map(item => (
+                                        <li key={item.ID_Item}>
+                                            <span className="font-semibold">{item.Nome_Item}</span> - Quantidade: <span className="font-bold text-lg">{item.Quantidade}</span>
+                                        </li>
+                                    ))}
+                                </ul>
+                            </div>
+                        </div>
                     </div>
                 )}
             </Modal>
             <Modal
                 isOpen={balancoMensalOpen ? true : false}
                 onClose={() => setBalancoMensalOpen(false)}
-                title={`Balanço Mensal`}
+                title={`Balanço`}
             >
                 {balancoMensalOpen && (
-                    <div className="bg-gradientcontainer-100/20 border border border-secondrow-100/20 rounded-md">
-                        <table className="w-full text-left table-auto min-w-max">
-                            <thead>
-                                <tr className="bg-secondrow-100/20">
-                                    <th className="p-4">
-                                        <p className="block font-sans text-center text-sm antialiased font-normal leading-none text-blue-gray-900 opacity-70">
-                                            Nome do Item</p>
-                                    </th>
-                                    <th className="p-4">
-                                        <p className="block font-sans text-center text-sm antialiased font-normal leading-none text-blue-gray-900 opacity-70">
-                                            Quantidade Doada</p>
-                                    </th>
-                                    <th className="p-4">
-                                        <p className="block font-sans text-center text-sm antialiased font-normal leading-none text-blue-gray-900 opacity-70">
-                                            Quantidade Entregue</p>
-                                    </th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {stats?.balancoMensal.map((item, index) => (
-                                    <tr key={item.Nome_Item} className={`${index % 2 === 0 ? '' : 'bg-secondrow-100/20'}`}>
-                                        <td className="p-4">
-                                            <p className="block font-sans text-center text-sm antialiased font-normal leading-normal text-blue-gray-900">
-                                                {item.Nome_Item}
-                                            </p>
-                                        </td>
-                                        <td className="p-4">
-                                            <p className="block font-sans text-center text-sm antialiased font-normal leading-normal text-blue-gray-900">
-                                                {item.Quantidade_Doada}
-                                            </p>
-                                        </td>
-                                        <td className="p-4">
-                                            <p className="block font-sans text-center text-sm antialiased font-normal leading-normal text-blue-gray-900">
-                                                {item.Quantidade_Entregue}
-                                            </p>
-                                        </td>
-                                    </tr>
-                                ))}
-                            </tbody>
-                        </table>
+                    <div className="bg-gradientcontainer-100/20 border border-secondrow-100/20 rounded-md">
+                        <div className="rounded-md">
+                            <ResponsiveContainer width="100%" height={300}>
+                                <BarChart data={stats?.balancoMensal} className={"p-4 mt-2"}>
+                                    <XAxis dataKey="Nome_Item" hide />
+                                    <YAxis padding={{ top: 10 }} axisLine={{ stroke: "rgba(0, 0, 0, 0)" }} tick={{ fill: "#FFF" }} tickLine={{ stroke: "#FFF" }} />
+                                    <Tooltip content={CustomTooltip} cursor={{ fill: 'rgba(206, 206, 206, 0.2)', radius: 5 }} />
+                                    <Bar dataKey="Quantidade_Doada" fill="#20307D" />
+                                    <Bar dataKey="Quantidade_Entregue" fill="#34469D" />
+                                </BarChart>
+                            </ResponsiveContainer>
+                        </div>
                     </div>
                 )}
-            </Modal>
+            </Modal >
+            < ToastContainer
+                position="bottom-center"
+                autoClose={3000}
+                hideProgressBar={false}
+                newestOnTop={false}
+                closeOnClick
+                rtl={false}
+                pauseOnFocusLoss
+                draggable
+                pauseOnHover
+                theme="colored"
+                transition={Bounce}
+            />
         </>
     )
 }

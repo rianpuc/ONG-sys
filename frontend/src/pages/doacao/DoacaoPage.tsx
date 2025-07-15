@@ -11,15 +11,14 @@ import type { Doador } from "../../interface/Doador";
 import type { Item } from "../../interface/Item";
 import { formatarDataParaExibicao } from "../../utils/Formatters";
 import InsertDoacaoForm from "./InsertDoacaoForm";
+import { Bounce, ToastContainer, toast } from 'react-toastify';
 import UpdateDoacaoForm from "./UpdateDoacaoForm";
 import Lupa from "../../components/icons/Lupa";
-import type { Stats } from "../../interface/Stats";
 import type { DoacaoStats } from "../../interface/DoacaoStats";
 import SimpleStatsCard from "../../components/card/SimpleStatsCard";
 import ComparisonStatsCard from "../../components/card/ComparisonStatsCard";
 import TopItemCard from "../../components/card/TopItemCard";
 import DashboardLayout from "../../components/layout/DashboardLayout";
-import Dashboard from "../../components/layout/Dashboard";
 
 
 const DoacaoPage = () => {
@@ -69,7 +68,6 @@ const DoacaoPage = () => {
     const { data: itens } = useFetch<Item[]>(`/item?trigger=${itemRefetchTrigger}`);
     /* FETCH PARA PEGAR STATS */
     const { data: stats, isLoading: statsIsLoading } = useFetch<DoacaoStats>(`/stats/doacao?trigger=${refetchTrigger}`);
-    console.log(stats);
     const handleApplyFiltro = (novosFiltros: DoacaoFiltro) => {
         setFiltrosAtivos(novosFiltros);
         setModalAberto(null);
@@ -84,11 +82,12 @@ const DoacaoPage = () => {
     const handleDeleteClick = async () => {
         try {
             await deletarDoacao(null, selectedDoacao?.ID_Doacao);
-            alert("Doacao deletada com sucesso!");
+            toast.success("Doação deletada com sucesso!");
             setRefetchTrigger(prev => prev + 1);
             setSelectedDoacao(null);
         } catch (err) {
-            console.error("Falha ao deletar doador:", err);
+            toast.error("Falha ao deletar doação")
+            console.error(err);
         }
     }
     let content;
@@ -108,14 +107,16 @@ const DoacaoPage = () => {
             <title>Doações</title>
             <Modal isOpen={modalAberto === 'inserir'} onClose={() => setModalAberto(null)} title="Adicionar Nova Doação">
                 <InsertDoacaoForm doadores={doadores!} itens={itens!} onDoadorCreated={handleDoadorCreated} onItemCreated={handleItemCreated}
-                    onSuccess={() => { setModalAberto(null); setRefetchTrigger(prev => prev + 1); }} />
+                    onError={() => { toast.error("Falha ao criar doação") }} onWarn={(mensagem) => { toast.warn(mensagem) }}
+                    onSuccess={() => { setModalAberto(null); setRefetchTrigger(prev => prev + 1); toast.success("Doação registrada com sucesso!"); }} />
             </Modal>
             <Modal isOpen={modalAberto === 'procurar'} onClose={() => setModalAberto(null)} title="Buscar Doações">
                 <FilterDoacaoForm doadores={doadores!} itens={itens!} onAplicarFiltros={handleApplyFiltro} />
             </Modal>
             <Modal isOpen={modalAberto === 'atualizar'} onClose={() => setModalAberto(null)} title="Atualizar Doação">
                 <UpdateDoacaoForm doadores={doadores!} itens={itens!} selectedDoacao={selectedDoacao!} onDoadorCreated={handleDoadorCreated}
-                    onItemCreated={handleItemCreated} onSuccess={() => { setModalAberto(null); setRefetchTrigger(prev => prev + 1); }} />
+                    onError={() => { toast.error("Falha ao atualizar doação:") }} onWarn={(mensagem) => { toast.warn(mensagem) }}
+                    onItemCreated={handleItemCreated} onSuccess={() => { setModalAberto(null); setRefetchTrigger(prev => prev + 1); toast.success("Doação atualizada com sucesso!") }} />
             </Modal>
             <DashboardLayout>
                 <div className="grid grid-cols-12 gap-4 rounded-lg inset-shadow-xs inset-shadow-white/25 p-3 bg-gradient-to-t from-basecontainer-100 to-buttonscontainer-100 shadow-[0px_2px_2px] shadow-black/25">
@@ -135,25 +136,43 @@ const DoacaoPage = () => {
             <Modal
                 isOpen={openDetalhes ? true : false}
                 onClose={() => setOpenDetalhes(null)}
-                title={`Detalhes da Doação #${openDetalhes?.ID_Doacao}`}
+                title={`Detalhes da Doação`}
+                id={`#${openDetalhes?.ID_Doacao}`}
             >
                 {openDetalhes && (
                     <div>
-                        <div className="flex flex-row justify-between mb-4">
+                        <div className="flex flex-row justify-between mb-4 p-4 rounded-md bg-secondrow-100/40">
                             <span><b>Doador:</b> {openDetalhes.Doador.Nome_Doador}</span>
                             <span><b>Data:</b> {formatarDataParaExibicao(openDetalhes.Data)}</span>
                         </div>
-                        <h4 className="font-semibold text-lg mb-2 text-cyan-400">Itens Inclusos:</h4>
-                        <ul className="list-disc list-inside space-y-2 bg-gray-900 p-4 rounded-md">
-                            {openDetalhes.itensDoados.map(item => (
-                                <li key={item.ID_Item}>
-                                    <span className="font-semibold">{item.nomeItem}</span> - Quantidade: <span className="font-bold text-lg">{item.quantidade}</span>
-                                </li>
-                            ))}
-                        </ul>
+                        <div className="bg-inputfield-100 p-4 rounded-md">
+                            <h4 className="font-semibold text-lg mb-2 text-cyan-400">Itens Inclusos:</h4>
+                            <div className="bg-modal-100/20 rounded-md overflow-y-scroll max-h-40">
+                                <ul className="list-disc list-inside space-y-2 p-4 rounded-md">
+                                    {openDetalhes.itensDoados.map(item => (
+                                        <li key={item.ID_Item}>
+                                            <span className="font-semibold">{item.nomeItem}</span><span className="font-thin text-sm"> /{item.quantidade}unid.</span>
+                                        </li>
+                                    ))}
+                                </ul>
+                            </div>
+                        </div>
                     </div>
                 )}
             </Modal>
+            <ToastContainer
+                position="bottom-center"
+                autoClose={3000}
+                hideProgressBar={false}
+                newestOnTop={false}
+                closeOnClick
+                rtl={false}
+                pauseOnFocusLoss
+                draggable
+                pauseOnHover
+                theme="colored"
+                transition={Bounce}
+            />
         </>
     )
 }

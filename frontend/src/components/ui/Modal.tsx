@@ -5,9 +5,10 @@ interface ModalProps {
     onClose: () => void;
     title: string;
     children: React.ReactNode;
+    id?: number | string;
 }
 
-const Modal = ({ isOpen, onClose, title, children }: ModalProps) => {
+const Modal = ({ isOpen, onClose, title, id, children }: ModalProps) => {
     const [showAnimation, setShowAnimation] = useState(false);
     useEffect(() => {
         if (isOpen) {
@@ -40,7 +41,7 @@ const Modal = ({ isOpen, onClose, title, children }: ModalProps) => {
                     ${showAnimation ? 'opacity-100 scale-100' : 'opacity-0 scale-95'}`}
             >
                 <div className="flex justify-between mb-4">
-                    <h2 className="text-2xl font-bold">{title}</h2>
+                    <h2 className="text-2xl font-bold">{title}{id && <span className='text-sky-300 italic'> {id}</span>}</h2>
                     <button onClick={handleClose} className="transition-all duration-300 ease-out bg-indigo-900/50 rounded-2xl text-indigo-900 w-8 hover:bg-indigo-900 hover:text-indigo-950 text-2xl cursor-pointer">&times;</button>
                 </div>
                 <div>

@@ -15,7 +15,7 @@ const TopItemCard = ({ titulo, itens, isLoading, span }: TopItemCardProps) => {
         <div className={`bg-blue-500 rounded-lg p-6 col-span-${span} row-span-${span} flex flex-col items-start`}>
             <h3 className="font-bold text-2xl mb-2">{`Top ${titulo}`}</h3>
             {isLoading ? <p>Carregando...</p> : (
-                <ul className="space-y-1">
+                <ul className="space-y-1 w-full">
                     {itens && itens.length > 0 ? (
                         itens.map(item => (
                             <li key={item.nomeItem} className="flex justify-between text-sm">

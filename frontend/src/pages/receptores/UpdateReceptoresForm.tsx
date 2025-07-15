@@ -2,13 +2,13 @@ import { useState } from 'react';
 import useMutation from '../../hooks/useMutation';
 import type { Receptor } from '../../interface/Receptor';
 
-// O formulário recebe a lista de instituições e uma função para fechar o modal no sucesso
 interface ReceptorFormProps {
     selectedReceptor: Receptor;
     onSuccess: () => void;
+    onError: () => void;
 }
 
-const UpdateReceptoresForm = ({ selectedReceptor, onSuccess }: ReceptorFormProps) => {
+const UpdateReceptoresForm = ({ selectedReceptor, onSuccess, onError }: ReceptorFormProps) => {
     const [nome, setNome] = useState(selectedReceptor.Nome);
     const [cpf, setCpf] = useState(selectedReceptor.CPF);
     const [endereco, setEndereco] = useState(selectedReceptor.Endereco);
@@ -23,10 +23,10 @@ const UpdateReceptoresForm = ({ selectedReceptor, onSuccess }: ReceptorFormProps
         };
         try {
             await atualizarReceptor(updatedVoluntario, updatedVoluntario.CPF);
-            alert('Receptor atualizado com sucesso!');
             onSuccess();
         } catch (err) {
-            console.error("Falha ao atualizar receptor:", err);
+            onError();
+            console.error(err);
         }
     };
 

@@ -8,9 +8,10 @@ interface VoluntarioFormProps {
     instituicoes: Instituicao[];
     selectedVoluntario: Voluntario;
     onSuccess: () => void;
+    onError: () => void;
 }
 
-const UpdateVoluntariosForm = ({ instituicoes, selectedVoluntario, onSuccess }: VoluntarioFormProps) => {
+const UpdateVoluntariosForm = ({ instituicoes, selectedVoluntario, onSuccess, onError }: VoluntarioFormProps) => {
     const [nome, setNome] = useState(selectedVoluntario.Nome);
     const [cpf, setCpf] = useState(selectedVoluntario.CPF);
     const [funcao, setFuncao] = useState(selectedVoluntario.Funcao);
@@ -28,10 +29,10 @@ const UpdateVoluntariosForm = ({ instituicoes, selectedVoluntario, onSuccess }: 
         };
         try {
             await atualizarVoluntario(updatedVoluntario, updatedVoluntario.CPF);
-            alert('Voluntário atualizado com sucesso!');
             onSuccess();
         } catch (err) {
-            console.error("Falha ao atualizar voluntário:", err);
+            onError();
+            console.error(err);
         }
     };
 

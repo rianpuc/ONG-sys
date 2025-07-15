@@ -15,7 +15,7 @@ interface TableProps<T> {
 const Table = <T extends { [key: string]: any }>({ data, columns, onRowClick, selectedItem, button }: TableProps<T>) => {
     const keyAccessor = Object.keys(data[0] || {})[0] as keyof T;
     return (
-        <div className="text-white ">
+        <div className="text-white max-h-115 p-4 overflow-x-hidden overflow-y-scroll">
             <div className="flex gap-2 mb-2 font-bold">
                 {columns.map((column) => (
                     <div key={column.header} className="flex-1 p-3 text-center">

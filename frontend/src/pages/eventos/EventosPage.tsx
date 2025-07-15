@@ -10,6 +10,7 @@ import FilterEventosForm from "./FilterEventosForm";
 import InsertEventosForm from "./InsertEventosForm";
 import UpdateEventosForm from "./UpdateEventosForm";
 import useMutation from "../../hooks/useMutation";
+import { Bounce, ToastContainer, toast } from 'react-toastify';
 import { formatarDataParaExibicao } from "../../utils/Formatters";
 import DashboardLayout from "../../components/layout/DashboardLayout";
 import SimpleStatsCard from "../../components/card/SimpleStatsCard";
@@ -57,11 +58,12 @@ const EventosPage = () => {
     const handleDeleteClick = async () => {
         try {
             await deletarEvento(null, selectedEvento?.ID_Evento);
-            alert("Evento deletado com sucesso!");
+            toast.success("Evento deletado com sucesso!");
             setRefetchTrigger(prev => prev + 1);
             setSelectedEvento(null);
         } catch (err) {
-            console.error("Falha ao deletar evento:", err);
+            toast.error("Falha ao deletar evento")
+            console.error(err);
         }
     }
     let content;
@@ -82,7 +84,8 @@ const EventosPage = () => {
         <>
             <title>Eventos</title>
             <Modal isOpen={modalAberto === 'inserir'} onClose={() => setModalAberto(null)} title="Adicionar Novo Evento">
-                <InsertEventosForm instituicoes={instituicoes || []} onSuccess={() => { setModalAberto(null); setRefetchTrigger(prev => prev + 1); }} />
+                <InsertEventosForm instituicoes={instituicoes || []} onError={() => { toast.error("Falha ao criar evento") }}
+                    onSuccess={() => { setModalAberto(null); setRefetchTrigger(prev => prev + 1); toast.success("Evento cadastrado com sucesso!") }} />
             </Modal>
             <Modal isOpen={modalAberto === 'procurar'} onClose={() => setModalAberto(null)} title="Buscar Eventos">
                 <FilterEventosForm onAplicarFiltros={handleApplyFiltro} instituicoes={instituicoes || []} />
@@ -90,8 +93,8 @@ const EventosPage = () => {
             <Modal isOpen={modalAberto === 'atualizar'} onClose={() => setModalAberto(null)} title="Atualizar Evento">
                 <UpdateEventosForm selectedEvento={selectedEvento!} onSuccess={() => {
                     setModalAberto(null); setRefetchTrigger(prev => prev + 1);
-                    setSelectedEvento(null);
-                }} instituicoes={instituicoes || []} />
+                    setSelectedEvento(null); toast.success("Evento atualizado com sucesso!")
+                }} instituicoes={instituicoes || []} onError={() => toast.error("Falha ao atualizar evento")} />
             </Modal>
             <DashboardLayout>
                 <div className="grid grid-cols-12 gap-4 rounded-lg inset-shadow-xs inset-shadow-white/25 p-3 bg-gradient-to-t from-basecontainer-100 to-buttonscontainer-100 shadow-[0px_2px_2px] shadow-black/25">
@@ -113,6 +116,19 @@ const EventosPage = () => {
                     {content}
                 </div>
             </DashboardLayout>
+            <ToastContainer
+                position="bottom-center"
+                autoClose={3000}
+                hideProgressBar={false}
+                newestOnTop={false}
+                closeOnClick
+                rtl={false}
+                pauseOnFocusLoss
+                draggable
+                pauseOnHover
+                theme="colored"
+                transition={Bounce}
+            />
         </>
     )
 }

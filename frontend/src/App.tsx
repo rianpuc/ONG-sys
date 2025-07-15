@@ -24,7 +24,7 @@ function App() {
   const location = useLocation();
   const backgroundClass = location.pathname === '/' ? 'bg-home' : 'bg';
   return (
-    <div className={`flex overflow-hidden overflow-x-hidden overflow-y-hidden ${backgroundClass}`}>
+    <div className={`flex overflow-hidden ${backgroundClass}`}>
       <Sidebar>
         <SidebarItem icon={<HomeIcon size={24} />} text="Início" href="/" />
         <SidebarItem icon={<DoacaoIcon size={24} />} text="Doações" href="/doacoes" />
@@ -35,7 +35,7 @@ function App() {
         <SidebarItem icon={<ReceptoresIcon size={24} />} text="Receptores" href="/receptores" />
         <SidebarItem icon={<VoluntariosIcon size={24} />} text="Voluntários" href="/voluntarios" />
       </Sidebar>
-      <main className="flex-1 p-6 overflow-hidden overflow-x-hidden overflow-y-hidden">
+      <main className="flex-1 p-5 overflow-hidden">
         <Routes>
           <Route path="/" element={<Homepage />} />
           <Route path="/doacoes" element={<DoacaoPage />} />

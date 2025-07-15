@@ -10,7 +10,7 @@ import Modal from "../../components/ui/Modal";
 import InsertDoadoresForm from "./InsertDoadoresForm";
 import FilterDoadoresForm from "./FilterDoadoresForm";
 import UpdateDoadoresForm from "./UpdateDoadoresForm";
-import Dashboard from "../../components/layout/Dashboard";
+import { Bounce, ToastContainer, toast } from 'react-toastify';
 import DashboardLayout from "../../components/layout/DashboardLayout";
 import SimpleStatsCard from "../../components/card/SimpleStatsCard";
 import type { DoadorStats } from "../../interface/DoadorStats";
@@ -83,13 +83,15 @@ const DoadoresPage = () => {
         <>
             <title>Doadores</title>
             <Modal isOpen={modalAberto === 'inserir'} onClose={() => setModalAberto(null)} title="Adicionar Novo Doador">
-                <InsertDoadoresForm onSuccess={() => { setModalAberto(null); setRefetchTrigger(prev => prev + 1); }} />
+                <InsertDoadoresForm onSuccess={() => { setModalAberto(null); setRefetchTrigger(prev => prev + 1); toast.success("Doador cadastrado com sucesso!"); }}
+                    onError={() => { toast.error("Falha ao criar doador") }} />
             </Modal>
             <Modal isOpen={modalAberto === 'procurar'} onClose={() => setModalAberto(null)} title="Buscar Doadores">
                 <FilterDoadoresForm onAplicarFiltros={handleApplyFiltro} />
             </Modal>
             <Modal isOpen={modalAberto === 'atualizar'} onClose={() => setModalAberto(null)} title="Atualizar Doador">
-                <UpdateDoadoresForm selectedDoador={selectedDoador!} onSuccess={() => { setModalAberto(null); setRefetchTrigger(prev => prev + 1); }} />
+                <UpdateDoadoresForm selectedDoador={selectedDoador!} onError={() => { toast.error("Falha ao atualizar doador") }}
+                    onSuccess={() => { setModalAberto(null); setRefetchTrigger(prev => prev + 1); toast.success("Doador atualizado com sucesso!"); }} />
             </Modal>
             <DashboardLayout>
                 <div className="grid grid-cols-12 gap-4 rounded-lg inset-shadow-xs inset-shadow-white/25 p-3 bg-gradient-to-t from-basecontainer-100 to-buttonscontainer-100 shadow-[0px_2px_2px] shadow-black/25">
@@ -114,6 +116,19 @@ const DoadoresPage = () => {
                     {content}
                 </div>
             </DashboardLayout>
+            <ToastContainer
+                position="bottom-center"
+                autoClose={3000}
+                hideProgressBar={false}
+                newestOnTop={false}
+                closeOnClick
+                rtl={false}
+                pauseOnFocusLoss
+                draggable
+                pauseOnHover
+                theme="colored"
+                transition={Bounce}
+            />
         </>
     )
 }

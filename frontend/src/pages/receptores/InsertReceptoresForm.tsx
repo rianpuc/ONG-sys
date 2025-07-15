@@ -6,9 +6,10 @@ import useMutation from '../../hooks/useMutation';
 interface ReceptorFormProps {
     name?: string;
     onSuccess: () => void;
+    onError: () => void;
 }
 
-const InsertReceptoresForm = ({ name, onSuccess }: ReceptorFormProps) => {
+const InsertReceptoresForm = ({ name, onSuccess, onError }: ReceptorFormProps) => {
     const [nome, setNome] = useState(name ? name : '');
     const [cpf, setCpf] = useState('');
     const [endereco, setEndereco] = useState('');
@@ -23,10 +24,10 @@ const InsertReceptoresForm = ({ name, onSuccess }: ReceptorFormProps) => {
         };
         try {
             await criarReceptor(novoReceptor);
-            alert('Receptor cadastrado com sucesso!');
             onSuccess();
         } catch (err) {
-            console.error("Falha ao criar receptor:", err);
+            onError();
+            console.error(err);
         }
     };
 

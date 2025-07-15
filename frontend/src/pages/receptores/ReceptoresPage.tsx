@@ -10,7 +10,7 @@ import Modal from "../../components/ui/Modal";
 import InsertReceptoresForm from "./InsertReceptoresForm";
 import FilterReceptoresForm from "./FilterReceptoresForm";
 import UpdateReceptoresForm from "./UpdateReceptoresForm";
-import Dashboard from "../../components/layout/Dashboard";
+import { Bounce, ToastContainer, toast } from 'react-toastify';
 import DashboardLayout from "../../components/layout/DashboardLayout";
 import SimpleStatsCard from "../../components/card/SimpleStatsCard";
 import type { ReceptorStats } from "../../interface/ReceptorStats";
@@ -55,11 +55,12 @@ const ReceptoresPage = () => {
     const handleDeleteClick = async () => {
         try {
             await deletarReceptor(null, selectedReceptor?.CPF);
-            alert("Receptor deletado com sucesso!");
+            toast.success("Receptor deletado com sucesso!");
             setRefetchTrigger(prev => prev + 1);
             setSelectedReceptor(null);
         } catch (err) {
-            console.error("Falha ao deletar receptor:", err);
+            toast.error("Falha ao deletar receptor");
+            console.error(err);
         }
     }
     let content;
@@ -80,15 +81,16 @@ const ReceptoresPage = () => {
         <>
             <title>Receptores</title>
             <Modal isOpen={modalAberto === 'inserir'} onClose={() => setModalAberto(null)} title="Adicionar Novo Receptor">
-                <InsertReceptoresForm onSuccess={() => { setModalAberto(null); setRefetchTrigger(prev => prev + 1); }} />
+                <InsertReceptoresForm onError={() => { toast.error("Falha ao criar receptor") }}
+                    onSuccess={() => { setModalAberto(null); setRefetchTrigger(prev => prev + 1); toast.success("Receptor cadastrado com sucesso!") }} />
             </Modal>
             <Modal isOpen={modalAberto === 'procurar'} onClose={() => setModalAberto(null)} title="Buscar Receptores">
                 <FilterReceptoresForm onAplicarFiltros={handleApplyFiltro} />
             </Modal>
             <Modal isOpen={modalAberto === 'atualizar'} onClose={() => setModalAberto(null)} title="Atualizar Receptor">
-                <UpdateReceptoresForm selectedReceptor={selectedReceptor!} onSuccess={() => {
+                <UpdateReceptoresForm selectedReceptor={selectedReceptor!} onError={() => toast.error("Falha ao atualizar receptor")} onSuccess={() => {
                     setModalAberto(null); setRefetchTrigger(prev => prev + 1);
-                    setSelectedReceptor(null);
+                    setSelectedReceptor(null); toast.success("Receptor atualizado com sucesso!")
                 }} />
             </Modal>
             <DashboardLayout>
@@ -118,39 +120,54 @@ const ReceptoresPage = () => {
             <Modal isOpen={modalAberto === 'receptorAusente'} onClose={() => setModalAberto(null)} title={titleAusente}>
                 {stats?.receptoresAusentes &&
                     <div className="bg-gradientcontainer-100/20 border border border-secondrow-100/20 rounded-md">
-                        <table className="w-full text-left table-auto min-w-max">
-                            <thead>
-                                <tr className="bg-secondrow-100/20">
-                                    <th className="p-4">
-                                        <p className="block font-sans text-center text-sm antialiased font-normal leading-none text-blue-gray-900 opacity-70">
-                                            Nome do Receptor</p>
-                                    </th>
-                                    <th className="p-4">
-                                        <p className="block font-sans text-center text-sm antialiased font-normal leading-none text-blue-gray-900 opacity-70">
-                                            CPF</p>
-                                    </th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {stats?.receptoresAusentes.map((item, index) => (
-                                    <tr key={item.receptorCPF} className={`${index % 2 === 0 ? '' : 'bg-secondrow-100/20'}`}>
-                                        <td className="p-4">
-                                            <p className="block font-sans text-center text-sm antialiased font-normal leading-normal text-blue-gray-900">
-                                                {item.receptorNome}
-                                            </p>
-                                        </td>
-                                        <td className="p-4">
-                                            <p className="block font-sans text-center text-sm antialiased font-normal leading-normal text-blue-gray-900">
-                                                {item.receptorCPF}
-                                            </p>
-                                        </td>
+                        <div className="overflow-y-scroll overflow-x-hidden max-h-80 rounded-md">
+                            <table className="w-full text-left table-auto">
+                                <thead>
+                                    <tr className="bg-secondrow-100/20">
+                                        <th className="p-4">
+                                            <p className="block font-sans text-center text-sm antialiased font-normal leading-none text-blue-gray-900 opacity-70">
+                                                Nome do Receptor</p>
+                                        </th>
+                                        <th className="p-4">
+                                            <p className="block font-sans text-center text-sm antialiased font-normal leading-none text-blue-gray-900 opacity-70">
+                                                CPF</p>
+                                        </th>
                                     </tr>
-                                ))}
-                            </tbody>
-                        </table>
+                                </thead>
+                                <tbody>
+                                    {stats?.receptoresAusentes.map((item, index) => (
+                                        <tr key={item.receptorCPF} className={`${index % 2 === 0 ? '' : 'bg-secondrow-100/20'}`}>
+                                            <td className="p-4">
+                                                <p className="block font-sans text-center text-sm antialiased font-normal leading-normal text-blue-gray-900">
+                                                    {item.receptorNome}
+                                                </p>
+                                            </td>
+                                            <td className="p-4">
+                                                <p className="block font-sans text-center text-sm antialiased font-normal leading-normal text-blue-gray-900">
+                                                    {item.receptorCPF}
+                                                </p>
+                                            </td>
+                                        </tr>
+                                    ))}
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
                 }
             </Modal>
+            <ToastContainer
+                position="bottom-center"
+                autoClose={3000}
+                hideProgressBar={false}
+                newestOnTop={false}
+                closeOnClick
+                rtl={false}
+                pauseOnFocusLoss
+                draggable
+                pauseOnHover
+                theme="colored"
+                transition={Bounce}
+            />
         </>
     )
 }

@@ -8,9 +8,10 @@ interface VoluntarioFormProps {
     instituicoes: Instituicao[];
     selectedEvento: Evento;
     onSuccess: () => void;
+    onError: () => void;
 }
 
-const UpdateVoluntariosForm = ({ instituicoes, selectedEvento, onSuccess }: VoluntarioFormProps) => {
+const UpdateVoluntariosForm = ({ instituicoes, selectedEvento, onSuccess, onError }: VoluntarioFormProps) => {
     const [local, setLocal] = useState(selectedEvento.Local);
     const [data, setData] = useState<string>(selectedEvento.Data.toString().split('T')[0]);
     const selecionadaInstituicao = instituicoes.find(inst => inst.Nome === selectedEvento.Organizador);
@@ -25,10 +26,10 @@ const UpdateVoluntariosForm = ({ instituicoes, selectedEvento, onSuccess }: Volu
         };
         try {
             await atualizarEvento(updatedEvento, selectedEvento.ID_Evento);
-            alert('Evento atualizado com sucesso!');
             onSuccess();
         } catch (err) {
-            console.error("Falha ao atualizar evento:", err);
+            onError();
+            console.error(err);
         }
     };
 

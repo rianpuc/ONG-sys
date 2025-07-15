@@ -20,6 +20,8 @@ interface DoadorOption {
 // Definindo as props que o formulário recebe
 interface UpdateFormProps {
     onSuccess: () => void;
+    onError: () => void;
+    onWarn: (mensagem: string) => void;
     onDoadorCreated: () => void;
     onItemCreated: () => void;
     selectedDoacao: Doacao;
@@ -27,7 +29,7 @@ interface UpdateFormProps {
     itens: Item[];
 }
 
-const UpdateDoacaoForm = ({ onSuccess, doadores, itens, selectedDoacao, onDoadorCreated, onItemCreated }: UpdateFormProps) => {
+const UpdateDoacaoForm = ({ onSuccess, onError, onWarn, doadores, itens, selectedDoacao, onDoadorCreated, onItemCreated }: UpdateFormProps) => {
 
     const [subModalAberto, setSubModalAberto] = useState<null | 'novoDoador' | 'novoItem'>(null);
     const [data, setData] = useState(selectedDoacao.Data.toString().split('T')[0]);
@@ -48,7 +50,7 @@ const UpdateDoacaoForm = ({ onSuccess, doadores, itens, selectedDoacao, onDoador
         e.preventDefault(); // Impede o recarregamento da página
         const itemInvalido = itensDoados.some(item => item.ID_Item === '');
         if (itemInvalido) {
-            alert('Por favor, selecione um item válido para todas as linhas.');
+            onWarn('Por favor, selecione um item válido para todas as linhas.');
             return
         }
         const novaDoacao = {
@@ -61,10 +63,10 @@ const UpdateDoacaoForm = ({ onSuccess, doadores, itens, selectedDoacao, onDoador
         };
         try {
             await atualizarDoacao(novaDoacao, selectedDoacao.ID_Doacao);
-            alert("Doacao registrada com sucesso!");
             onSuccess();
         } catch (err) {
-            console.error("Falha ao criar doacao:", err);
+            onError();
+            console.error(err);
         }
     };
 
