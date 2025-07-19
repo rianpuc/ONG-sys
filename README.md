@@ -3,6 +3,19 @@
 
 Uma aplicação web full-stack para gerenciamento de ONGs, construída com React, Spring Boot e Docker.  
 
+## 📫 Contato
+
+### 👨‍💻 Rian Eduardo 
+- Desenvolvimento completo do site (Frontend, Backend, Docker, Banco de Dados)
+- Github: [rianpuc](https://github.com/rianpuc)
+- LinkedIn: [perfil](https://www.linkedin.com/in/riandll/)
+- E-mail: rianeduardotec@gmail.com
+
+### 🎨 Geovana Zamproni
+- Criação do design gráfico, wireframes e protótipos
+- LinkedIn: [perfil](https://www.linkedin.com/in/geovana-zamproni-3a53a82a8/)
+- Behance: [perfil](https://www.behance.net/geovanazamproni)
+
 ## 📄 Sobre o Projeto
 
 O ONG-sys é um sistema de gestão completo, projetado para auxiliar organizações não governamentais a gerenciar seus recursos, doadores, voluntários, receptores e eventos de forma centralizada e eficiente.
@@ -95,16 +108,3 @@ O repositório está organizado da seguinte forma:
 ├── docker-compose.yml      # Orquestra todos os containers
 └── README.md
 ```
-
-## 📫 Contato
-
-### 👨‍💻 Rian Eduardo 
-- Desenvolvimento completo do site (Frontend, Backend, Docker, Banco de Dados)
-- Github: [rianpuc](https://github.com/rianpuc)
-- LinkedIn: [perfil](https://www.linkedin.com/in/riandll/)
-- E-mail: rianeduardotec@gmail.com
-
-### 🎨 Geovana Zamproni
-- Criação do design gráfico, wireframes e protótipos
-- LinkedIn: [perfil](https://www.linkedin.com/in/geovana-zamproni-3a53a82a8/)
-- Behance: [perfil](https://www.behance.net/geovanazamproni)
