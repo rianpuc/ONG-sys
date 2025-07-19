@@ -14,7 +14,7 @@ import type { Item } from "../../interface/Item";
 import FilterEntregasForm from "./FilterEntregasForm";
 import InsertEntregasForm from "./InsertEntregasForm";
 import UpdateEntregasForm from "./UpdateEntregasForm";
-import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer } from 'recharts'
+import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid } from 'recharts'
 import { Bounce, ToastContainer, toast } from 'react-toastify';
 import DashboardLayout from "../../components/layout/DashboardLayout";
 import SimpleStatsCard from "../../components/card/SimpleStatsCard";
@@ -56,8 +56,8 @@ const EntregasPage = () => {
                 <div className="flex justify-center">
                     <button
                         onClick={() => setOpenDetalhes(entrega)}
-                        className="text-gray-400 hover:text-white hover:bg-gray-600 rounded-full transition-colors"
-                        aria-label={`Ver detalhes da doação ${entrega.ID_Entrega}`}
+                        className="text-gray-400 hover:text-white rounded-full transition-colors"
+                        aria-label={`Ver detalhes da entrega ${entrega.ID_Entrega}`}
                     >
                         <Lupa className="w-5 h-5" />
                     </button>
@@ -66,9 +66,9 @@ const EntregasPage = () => {
         }
     ];
 
-    const handleEventoCreated = () => setEventoRefetchTrigger(prev => prev + 1);
-    const handleReceptorCreated = () => setReceptorRefetchTrigger(prev => prev + 1);
-    const handleItemCreated = () => setItemRefetchTrigger(prev => prev + 1);
+    const handleEventoCreated = () => { setEventoRefetchTrigger(prev => prev + 1); toast.success("Evento cadastrado com sucesso!"); }
+    const handleReceptorCreated = () => { setReceptorRefetchTrigger(prev => prev + 1); toast.success("Receptor cadastrado com sucesso!"); }
+    const handleItemCreated = () => { setItemRefetchTrigger(prev => prev + 1); toast.success("Item cadastrado com sucesso!"); }
     const { execute: deletarEntrega } = useMutation('/entrega', 'DELETE');
 
     const queryString = useMemo(() => {
@@ -86,6 +86,7 @@ const EntregasPage = () => {
     const { data: itens } = useFetch<Item[]>(`/item?trigger=${itemRefetchTrigger}`);
     /* FETCH PARA STATS */
     const { data: stats, isLoading: isLoadingStats } = useFetch<EntregaStats>(`/stats/entrega?trigger=${refetchTrigger}`);
+    const formattedBalanco = stats?.balancoMensal.filter((balance) => balance.Quantidade_Doada > 0 || balance.Quantidade_Entregue > 0);
     const handleApplyFiltro = (novosFiltros: EntregaFiltro) => {
         setFiltrosAtivos(novosFiltros);
         setModalAberto(null);
@@ -100,7 +101,7 @@ const EntregasPage = () => {
     const handleDeleteClick = async () => {
         try {
             await deletarEntrega(null, selectedEntrega?.ID_Entrega);
-            alert("Entrega deletada com sucesso!");
+            toast.success("Entrega deletada com sucesso!");
             setRefetchTrigger(prev => prev + 1);
             setSelectedEntrega(null);
         } catch (err) {
@@ -126,7 +127,7 @@ const EntregasPage = () => {
             <title>Entregas</title>
             <Modal isOpen={modalAberto === 'inserir'} onClose={() => setModalAberto(null)} title="Adicionar Nova Entrega">
                 <InsertEntregasForm eventos={eventos!} itens={itens!} receptores={receptores!} onEventoCreated={handleEventoCreated} onItemCreated={handleItemCreated}
-                    onError={() => { toast.error("Falha ao criar entrega") }} onWarn={(mensagem) => { toast.warn(mensagem) }}
+                    onError={(msg) => { toast.error("Falha ao criar entrega: " + msg) }} onWarn={(mensagem) => { toast.warn(mensagem) }}
                     onReceptorCreated={handleReceptorCreated} onSuccess={() => { setModalAberto(null); setRefetchTrigger(prev => prev + 1); toast.success("Entrega registrada com sucesso!") }} />
             </Modal>
             <Modal isOpen={modalAberto === 'procurar'} onClose={() => setModalAberto(null)} title="Buscar Entregas">
@@ -162,7 +163,7 @@ const EntregasPage = () => {
             <Modal
                 isOpen={openDetalhes ? true : false}
                 onClose={() => setOpenDetalhes(null)}
-                title={`Detalhes da Doação`}
+                title={`Detalhes da Entrega`}
                 id={`#${openDetalhes?.ID_Entrega}`}
             >
                 {openDetalhes && (
@@ -177,7 +178,7 @@ const EntregasPage = () => {
                                 <ul className="list-disc list-inside space-y-2 p-4 rounded-md">
                                     {openDetalhes.itensEntregues.map(item => (
                                         <li key={item.ID_Item}>
-                                            <span className="font-semibold">{item.Nome_Item}</span> - Quantidade: <span className="font-bold text-lg">{item.Quantidade}</span>
+                                            <span className="font-semibold">{item.Nome_Item}</span><span className="font-thin text-sm"> /{item.Quantidade}unid.</span>
                                         </li>
                                     ))}
                                 </ul>
@@ -192,10 +193,10 @@ const EntregasPage = () => {
                 title={`Balanço`}
             >
                 {balancoMensalOpen && (
-                    <div className="bg-gradientcontainer-100/20 border border-secondrow-100/20 rounded-md">
+                    <div className="bg-gradientcontainer-100/50 border border-secondrow-100/20 rounded-md">
                         <div className="rounded-md">
                             <ResponsiveContainer width="100%" height={300}>
-                                <BarChart data={stats?.balancoMensal} className={"p-4 mt-2"}>
+                                <BarChart data={formattedBalanco} className={"p-4 mt-2"}>
                                     <XAxis dataKey="Nome_Item" hide />
                                     <YAxis padding={{ top: 10 }} axisLine={{ stroke: "rgba(0, 0, 0, 0)" }} tick={{ fill: "#FFF" }} tickLine={{ stroke: "#FFF" }} />
                                     <Tooltip content={CustomTooltip} cursor={{ fill: 'rgba(206, 206, 206, 0.2)', radius: 5 }} />

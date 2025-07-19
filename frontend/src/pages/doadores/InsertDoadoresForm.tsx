@@ -5,7 +5,7 @@ import useMutation from '../../hooks/useMutation';
 // O formulário recebe a lista de instituições e uma função para fechar o modal no sucesso
 interface DoadorFormProps {
     onSuccess: () => void;
-    onError: () => void;
+    onError: (msg: string) => void;
     name?: string;
 }
 
@@ -29,7 +29,7 @@ const InsertReceptoresForm = ({ onSuccess, onError, name }: DoadorFormProps) => 
             await criarDoador(novoDoador);
             onSuccess();
         } catch (err) {
-            onError();
+            onError(String(err));
             console.error(err);
         }
     };

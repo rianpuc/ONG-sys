@@ -29,12 +29,16 @@ const ItensPage = () => {
     const [refetchTrigger, setRefetchTrigger] = useState(0);
     const { execute: deletarItem } = useMutation('/item', 'DELETE');
     const queryString = useMemo(() => {
+        console.log(Object.entries(filtrosAtivos));
         const activeFilters = Object.fromEntries(
-            Object.entries(filtrosAtivos).filter(([_, value]) => value)
+            Object.entries(filtrosAtivos).filter(([_, value]) => {
+                return value !== null && value !== undefined && value !== '';
+            })
         );
         return new URLSearchParams(activeFilters).toString();
     }, [filtrosAtivos]);
     const apiUrl = `/item?${queryString}&trigger=${refetchTrigger}`;
+    console.log(apiUrl);
     /* OBTENDO ITENS DO BD */
     const { data: itens, isLoading, error } = useFetch<Item[]>(apiUrl);
     /* FETCH DE STATS */
@@ -42,7 +46,7 @@ const ItensPage = () => {
     const titleDoado = stats?.maisDoado.length! > 1 ? "Itens mais doados" : "Item mais doado";
     const titleEntregue = stats?.maisEntregue.length! > 1 ? "Itens mais entregues" : "Item mais entregue";
     const titleEstoque = stats?.menoresItensEmEstoque.length! > 1 ? "Menores itens em estoque" : "Menor item em estoque";
-    console.log(stats);
+    //console.log(stats);
     const handleApplyFiltro = (novosFiltros: ItemFiltro) => {
         setFiltrosAtivos(novosFiltros);
         setModalAberto(null);
@@ -81,14 +85,14 @@ const ItensPage = () => {
         <>
             <title>Itens</title>
             <Modal isOpen={modalAberto === 'inserir'} onClose={() => setModalAberto(null)} title="Adicionar Novo Item">
-                <InsertItensForm onSuccess={() => { setModalAberto(null); setRefetchTrigger(prev => prev + 1); toast.success("Item cadastrado com sucesso!"); }}
+                <InsertItensForm itens={itens!} onSuccess={() => { setModalAberto(null); setRefetchTrigger(prev => prev + 1); toast.success("Item cadastrado com sucesso!"); }}
                     onError={() => { toast.error("Falha ao criar item") }} />
             </Modal>
             <Modal isOpen={modalAberto === 'procurar'} onClose={() => setModalAberto(null)} title="Buscar Itens">
-                <FilterItensForm onAplicarFiltros={handleApplyFiltro} />
+                <FilterItensForm itens={itens!} onAplicarFiltros={handleApplyFiltro} />
             </Modal>
             <Modal isOpen={modalAberto === 'atualizar'} onClose={() => setModalAberto(null)} title="Atualizar Item">
-                <UpdateItensForm selectedItem={selectedItem!} onError={() => { toast.error("Falha ao atualizar item") }} onSuccess={() => {
+                <UpdateItensForm itens={itens!} selectedItem={selectedItem!} onError={() => { toast.error("Falha ao atualizar item") }} onSuccess={() => {
                     setModalAberto(null); setRefetchTrigger(prev => prev + 1);
                     setSelectedItem(null); toast.success("Item atualizado com sucesso!");
                 }} />
@@ -108,7 +112,7 @@ const ItensPage = () => {
                         </h1>
                         <span className="text-blue-200">nos últimos 30 dias</span>
                     </div>
-                    <div onClick={() => handleApplyFiltro({ igualA: stats?.menoresItensEmEstoque[0].quantidadeTotal! })} className={`bg-blue-500 rounded-lg p-6 col-span-3 row-span-3 flex flex-col items-start cursor-pointer`}>
+                    <div onClick={() => handleApplyFiltro({ Nome: '', Tipo: '', igualA: stats?.menoresItensEmEstoque[0].quantidadeTotal! })} className={`bg-blue-500 rounded-lg p-6 col-span-3 row-span-3 flex flex-col items-start cursor-pointer`}>
                         <h1 className="text-2xl font-thin">
                             {titleEstoque}
                         </h1>

@@ -84,13 +84,13 @@ const DoadoresPage = () => {
             <title>Doadores</title>
             <Modal isOpen={modalAberto === 'inserir'} onClose={() => setModalAberto(null)} title="Adicionar Novo Doador">
                 <InsertDoadoresForm onSuccess={() => { setModalAberto(null); setRefetchTrigger(prev => prev + 1); toast.success("Doador cadastrado com sucesso!"); }}
-                    onError={() => { toast.error("Falha ao criar doador") }} />
+                    onError={(msg) => { toast.error("Falha ao criar doador: " + msg) }} />
             </Modal>
             <Modal isOpen={modalAberto === 'procurar'} onClose={() => setModalAberto(null)} title="Buscar Doadores">
                 <FilterDoadoresForm onAplicarFiltros={handleApplyFiltro} />
             </Modal>
             <Modal isOpen={modalAberto === 'atualizar'} onClose={() => setModalAberto(null)} title="Atualizar Doador">
-                <UpdateDoadoresForm selectedDoador={selectedDoador!} onError={() => { toast.error("Falha ao atualizar doador") }}
+                <UpdateDoadoresForm selectedDoador={selectedDoador!} onError={(msg) => { toast.error("Falha ao atualizar doador: " + msg) }}
                     onSuccess={() => { setModalAberto(null); setRefetchTrigger(prev => prev + 1); toast.success("Doador atualizado com sucesso!"); }} />
             </Modal>
             <DashboardLayout>

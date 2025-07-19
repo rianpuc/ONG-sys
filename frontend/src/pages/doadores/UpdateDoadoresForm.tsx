@@ -7,7 +7,7 @@ import MaskedInput from '../../components/ui/MaskedInput';
 interface DoadorFormProps {
     selectedDoador: Doador;
     onSuccess: () => void;
-    onError: () => void;
+    onError: (mensagem: string) => void;
 }
 
 const UpdateDoadoresForm = ({ selectedDoador, onSuccess, onError }: DoadorFormProps) => {
@@ -29,9 +29,8 @@ const UpdateDoadoresForm = ({ selectedDoador, onSuccess, onError }: DoadorFormPr
         try {
             await atualizarDoador(updatedDoador, selectedDoador.ID_Doador);
             onSuccess();
-        } catch (err) {
-            onError();
-            console.error(err);
+        } catch (err: any) {
+            onError(String(err));
         }
     };
 
@@ -49,9 +48,9 @@ const UpdateDoadoresForm = ({ selectedDoador, onSuccess, onError }: DoadorFormPr
                     const novoTipo = e.target.value as "Fisica" | "Juridica";
                     setTipo(novoTipo);
                     if (tipo === "Fisica") {
-                        setCpf('');
-                    } else {
                         setCnpj('');
+                    } else {
+                        setCpf('');
                     }
                 }}
                     className="mt-1 block w-full bg-inputfield-100 border-none outline-none rounded-md py-2 px-3 text-white">

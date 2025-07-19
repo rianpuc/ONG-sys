@@ -20,7 +20,7 @@ interface DoadorOption {
 // Definindo as props que o formulário recebe
 interface UpdateFormProps {
     onSuccess: () => void;
-    onError: () => void;
+    onError: (mensagem: string) => void;
     onWarn: (mensagem: string) => void;
     onDoadorCreated: () => void;
     onItemCreated: () => void;
@@ -33,7 +33,7 @@ const UpdateDoacaoForm = ({ onSuccess, onError, onWarn, doadores, itens, selecte
 
     const [subModalAberto, setSubModalAberto] = useState<null | 'novoDoador' | 'novoItem'>(null);
     const [data, setData] = useState(selectedDoacao.Data.toString().split('T')[0]);
-    const [doadorID, setDoadorID] = useState(selectedDoacao.Doador.ID_Doador);
+    const [doador, setDoador] = useState(selectedDoacao.Doador);
     const { execute: atualizarDoacao, isLoading, error } = useMutation('/doacao', 'PUT');
     /* LOGICA PARA USAR CREATABLESELECT */
     const doadorOptions = doadores.map(d => ({ value: d.ID_Doador, label: d.Nome_Doador }));
@@ -55,7 +55,7 @@ const UpdateDoacaoForm = ({ onSuccess, onError, onWarn, doadores, itens, selecte
         }
         const novaDoacao = {
             Data: data,
-            Doador: doadorID,
+            Doador: doador.ID_Doador,
             itensDoados: itensDoados.map(item => ({
                 ID_Item: item.ID_Item,
                 Quantidade: item.quantidade
@@ -65,7 +65,7 @@ const UpdateDoacaoForm = ({ onSuccess, onError, onWarn, doadores, itens, selecte
             await atualizarDoacao(novaDoacao, selectedDoacao.ID_Doacao);
             onSuccess();
         } catch (err) {
-            onError();
+            onError("Falha ao atualizar doação");
             console.error(err);
         }
     };
@@ -73,7 +73,15 @@ const UpdateDoacaoForm = ({ onSuccess, onError, onWarn, doadores, itens, selecte
     const handleItemChange = (index: number, field: keyof ItemDoado, value: string) => {
         let novosItens = [...itensDoados];
         if (field === 'ID_Item') {
-            novosItens[index][field] = value === '' ? '' : Number(value);
+            const itemSelecionado = itens.find((item) => item.ID_Item === Number(value));
+            if (novosItens.find((item) => item.ID_Item === itemSelecionado?.ID_Item)) {
+                onError("Não é possivel adicionar o mesmo item duas vezes");
+                return;
+            }
+            novosItens[index][field] = Number(value);
+            novosItens[index]["nomeItem"] = itemSelecionado?.Nome_Item;
+            novosItens[index]["tipoItem"] = itemSelecionado?.Tipo_Item;
+            console.log(novosItens[index]);
         } else if (field === 'quantidade') {
             novosItens[index][field] = Number(value);
         } else {
@@ -91,9 +99,10 @@ const UpdateDoacaoForm = ({ onSuccess, onError, onWarn, doadores, itens, selecte
         setItensDoados(novosItens);
     }
     const customClassNames: ClassNamesConfig<DoadorOption> = {
-        control: () =>
+        control: (state) =>
             classNames(
-                'block w-full cursor-pointer bg-inputfield-100 rounded-md py-2 px-3 text-white'
+                'block w-full rounded-md py-2 px-3 text-white',
+                `${state.isDisabled ? 'cursor-not-allowed bg-inputfield-100/50' : 'cursor-pointer bg-inputfield-100'}`
             ),
         option: () =>
             classNames(
@@ -130,9 +139,10 @@ const UpdateDoacaoForm = ({ onSuccess, onError, onWarn, doadores, itens, selecte
                     <CreatableSelect<DoadorOption>
                         isClearable
                         unstyled
+                        isDisabled={!selectedDoacao.Doador.Status}
                         options={doadorOptions}
-                        value={{ value: selectedDoacao.Doador.ID_Doador, label: selectedDoacao.Doador.Nome_Doador }}
-                        onChange={(e) => setDoadorID(e ? Number(e.value) : -1)}
+                        value={{ value: doador.ID_Doador, label: doador.Status === true ? doador.Nome_Doador : "Doador Anônimo" }}
+                        onChange={(e) => { setDoador({ ID_Doador: Number(e?.value), CPF: "", CNPJ: "", Nome_Doador: e?.label!, Tipo_Doador: "Fisica", Status: true }); }}
                         onCreateOption={handleCreateDoador}
                         placeholder="Selecione ou digite para criar um novo doador"
                         formatCreateLabel={inputValue => `Criar ${inputValue}...`}
@@ -159,7 +169,6 @@ const UpdateDoacaoForm = ({ onSuccess, onError, onWarn, doadores, itens, selecte
                                     classNames={customClassNames}
                                     className='flex-1'
                                 />
-                                {/* Input de Quantidade */}
                                 <input
                                     type="number"
                                     value={item.quantidade}
@@ -170,7 +179,6 @@ const UpdateDoacaoForm = ({ onSuccess, onError, onWarn, doadores, itens, selecte
                                     className="w-24 bg-inputfield-100 border-none outline-none rounded-md py-2 px-3 text-white"
                                 />
 
-                                {/* Botão de Remover (só aparece se houver mais de 1 item) */}
                                 {itensDoados.length > 1 && (
                                     <X onClick={() => removerItem(index)} className='cursor-pointer rounded-md text-rose-500' />
                                 )}
@@ -190,12 +198,11 @@ const UpdateDoacaoForm = ({ onSuccess, onError, onWarn, doadores, itens, selecte
                 </div>
             </form>
             <Modal title="Cadastrar Novo Doador" isOpen={subModalAberto === 'novoDoador'} onClose={() => setSubModalAberto(null)}>
-                <InsertDoadoresForm onSuccess={() => { onDoadorCreated(); setSubModalAberto(null); }}></InsertDoadoresForm>
+                <InsertDoadoresForm onError={() => onError("Falha ao criar doador")} onSuccess={() => { onDoadorCreated(); setSubModalAberto(null); }}></InsertDoadoresForm>
             </Modal>
             <Modal title="Cadastrar Novo Item" isOpen={subModalAberto === 'novoItem'} onClose={() => setSubModalAberto(null)}>
-                <InsertItensForm quantity={true} onSuccess={() => { onItemCreated(); setSubModalAberto(null); }}></InsertItensForm>
+                <InsertItensForm itens={itens!} onError={() => onError("Falha ao criar item")} quantity={true} onSuccess={() => { onItemCreated(); setSubModalAberto(null); }}></InsertItensForm>
             </Modal>
-
         </>
     );
 };

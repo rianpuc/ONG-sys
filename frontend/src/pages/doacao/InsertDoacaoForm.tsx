@@ -20,7 +20,7 @@ interface DoadorOption {
 // Definindo as props que o formulário recebe
 interface InsertFormProps {
     onSuccess: () => void;
-    onError: () => void;
+    onError: (mensagem: string) => void;
     onWarn: (mensagem: string) => void;
     onDoadorCreated: () => void;
     onItemCreated: () => void;
@@ -69,7 +69,7 @@ const InsertDoacaoForm = ({ onSuccess, onError, onWarn, doadores, itens, onDoado
             await criarDoacao(novaDoacao);
             onSuccess();
         } catch (err) {
-            onError();
+            onError("Falha ao criar doação: " + String(err));
             console.error(err);
         }
     };
@@ -191,10 +191,10 @@ const InsertDoacaoForm = ({ onSuccess, onError, onWarn, doadores, itens, onDoado
                 </div>
             </form>
             <Modal title="Cadastrar Novo Doador" isOpen={subModalAberto === 'novoDoador'} onClose={() => setSubModalAberto(null)}>
-                <InsertDoadoresForm name={reutilizar} onSuccess={() => { onDoadorCreated(); setSubModalAberto(null); }}></InsertDoadoresForm>
+                <InsertDoadoresForm name={reutilizar} onError={() => onError("Falha ao criar doador")} onSuccess={() => { onDoadorCreated(); setSubModalAberto(null); }}></InsertDoadoresForm>
             </Modal>
             <Modal title="Cadastrar Novo Item" isOpen={subModalAberto === 'novoItem'} onClose={() => setSubModalAberto(null)}>
-                <InsertItensForm name={reutilizar} quantity={true} onSuccess={() => { onItemCreated(); setSubModalAberto(null); }}></InsertItensForm>
+                <InsertItensForm itens={itens!} name={reutilizar} onError={() => onError("Falha ao criar item")} quantity={true} onSuccess={() => { onItemCreated(); setSubModalAberto(null); }}></InsertItensForm>
             </Modal>
 
         </>

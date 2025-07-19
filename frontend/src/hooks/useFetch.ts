@@ -22,7 +22,7 @@ const useFetch = <T>(url: string): FetchState<T> => {
                 setError(null);
             } catch (error: any) {
                 if (axios.isCancel(error)) {
-                    console.log(error.message);
+                    //console.log(error.message);
                 } else {
                     setError(error.message);
                 }

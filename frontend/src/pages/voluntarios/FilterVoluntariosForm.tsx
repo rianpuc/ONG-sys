@@ -1,18 +1,26 @@
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import type { Instituicao } from '../../interface/Instituicao';
+import type { Voluntario } from '../../interface/Voluntario';
 
 // Definindo as props que o formulário recebe
 interface FilterFormProps {
     onAplicarFiltros: (filtros: object) => void;
     instituicoes: Instituicao[];
+    voluntarios: Voluntario[];
 }
 
-const FilterVoluntariosForm = ({ onAplicarFiltros, instituicoes }: FilterFormProps) => {
+const FilterVoluntariosForm = ({ onAplicarFiltros, instituicoes, voluntarios }: FilterFormProps) => {
     // Estados locais para cada campo do formulário
     const [cpf, setCpf] = useState('');
     const [nome, setNome] = useState('');
     const [funcao, setFuncao] = useState('');
     const [instituicaoId, setInstituicaoId] = useState('');
+
+    const funcoesUnicas = useMemo(() => {
+        if (!voluntarios) return [];
+        const todosOsTipos = voluntarios.map(voluntario => voluntario.Funcao);
+        return [...new Set(todosOsTipos)];
+    }, [voluntarios]);
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault(); // Impede o recarregamento da página
@@ -43,9 +51,12 @@ const FilterVoluntariosForm = ({ onAplicarFiltros, instituicoes }: FilterFormPro
             </div>
 
             <div>
-                <label htmlFor="funcao" className="block text-sm font-medium text-gray-300">Função</label>
-                <input type="text" id="funcao" value={funcao} onChange={e => setFuncao(e.target.value)}
-                    className="mt-1 block w-full bg-inputfield-100 border-none outline-none rounded-md py-2 px-3 text-white" />
+                <label htmlFor="funcao" className="block text-sm font-medium text-gray-300">Tipo</label>
+                <select id="funcao" value={funcao} onChange={e => setFuncao(e.target.value)}
+                    className="mt-1 block w-full bg-inputfield-100 border-none outline-none rounded-md py-2 px-3 text-white">
+                    <option value="">Todos</option>
+                    {funcoesUnicas.map(f => <option key={f!} value={f!}>{f!}</option>)}
+                </select>
             </div>
 
             <div>

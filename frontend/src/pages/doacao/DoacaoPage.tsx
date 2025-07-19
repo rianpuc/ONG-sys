@@ -33,7 +33,7 @@ const DoacaoPage = () => {
 
     const columns = [
         { header: 'Data da Doação', render: (doacao: Doacao) => formatarDataParaExibicao(doacao.Data) },
-        { header: 'Doador', render: (doacao: Doacao) => doacao.Doador?.Nome_Doador || 'N/A' },
+        { header: 'Doador', render: (doacao: Doacao) => doacao.Doador.Status ? doacao.Doador?.Nome_Doador : 'Doador Anônimo' },
         { header: 'Qtd. de Itens', render: (doacao: Doacao) => doacao.itensDoados.length },
         {
             header: 'Detalhes', render: (doacao: Doacao) => (
@@ -50,9 +50,14 @@ const DoacaoPage = () => {
         }
     ];
 
-    const handleDoadorCreated = () => setDoadorRefetchTrigger(prev => prev + 1);
-    const handleItemCreated = () => setItemRefetchTrigger(prev => prev + 1);
-
+    const handleDoadorCreated = () => {
+        setDoadorRefetchTrigger(prev => prev + 1);
+        toast.success("Doador cadastrado com sucesso!");
+    }
+    const handleItemCreated = () => {
+        setItemRefetchTrigger(prev => prev + 1);
+        toast.success("Item cadastrado com sucesso!");
+    }
     const { execute: deletarDoacao } = useMutation('/doacao', 'DELETE');
     const queryString = useMemo(() => {
         const activeFilters = Object.fromEntries(
@@ -102,12 +107,13 @@ const DoacaoPage = () => {
     } else {
         content = <p className="text-center text-gray-500">Nenhuma doacao encontrada!</p>;
     }
+    console.log(doacoes);
     return (
         <>
             <title>Doações</title>
             <Modal isOpen={modalAberto === 'inserir'} onClose={() => setModalAberto(null)} title="Adicionar Nova Doação">
                 <InsertDoacaoForm doadores={doadores!} itens={itens!} onDoadorCreated={handleDoadorCreated} onItemCreated={handleItemCreated}
-                    onError={() => { toast.error("Falha ao criar doação") }} onWarn={(mensagem) => { toast.warn(mensagem) }}
+                    onError={(msg) => { toast.error(msg) }} onWarn={(mensagem) => { toast.warn(mensagem) }}
                     onSuccess={() => { setModalAberto(null); setRefetchTrigger(prev => prev + 1); toast.success("Doação registrada com sucesso!"); }} />
             </Modal>
             <Modal isOpen={modalAberto === 'procurar'} onClose={() => setModalAberto(null)} title="Buscar Doações">
@@ -115,8 +121,13 @@ const DoacaoPage = () => {
             </Modal>
             <Modal isOpen={modalAberto === 'atualizar'} onClose={() => setModalAberto(null)} title="Atualizar Doação">
                 <UpdateDoacaoForm doadores={doadores!} itens={itens!} selectedDoacao={selectedDoacao!} onDoadorCreated={handleDoadorCreated}
-                    onError={() => { toast.error("Falha ao atualizar doação:") }} onWarn={(mensagem) => { toast.warn(mensagem) }}
-                    onItemCreated={handleItemCreated} onSuccess={() => { setModalAberto(null); setRefetchTrigger(prev => prev + 1); toast.success("Doação atualizada com sucesso!") }} />
+                    onError={(mensagem) => { toast.error(mensagem) }} onWarn={(mensagem) => { toast.warn(mensagem) }}
+                    onItemCreated={handleItemCreated} onSuccess={() => {
+                        setModalAberto(null);
+                        setRefetchTrigger(prev => prev + 1);
+                        toast.success("Doação atualizada com sucesso!");
+                    }
+                    } />
             </Modal>
             <DashboardLayout>
                 <div className="grid grid-cols-12 gap-4 rounded-lg inset-shadow-xs inset-shadow-white/25 p-3 bg-gradient-to-t from-basecontainer-100 to-buttonscontainer-100 shadow-[0px_2px_2px] shadow-black/25">
@@ -142,7 +153,7 @@ const DoacaoPage = () => {
                 {openDetalhes && (
                     <div>
                         <div className="flex flex-row justify-between mb-4 p-4 rounded-md bg-secondrow-100/40">
-                            <span><b>Doador:</b> {openDetalhes.Doador.Nome_Doador}</span>
+                            <span><b>Doador:</b> {openDetalhes.Doador.Status ? openDetalhes.Doador?.Nome_Doador : 'Doador Anônimo'}</span>
                             <span><b>Data:</b> {formatarDataParaExibicao(openDetalhes.Data)}</span>
                         </div>
                         <div className="bg-inputfield-100 p-4 rounded-md">

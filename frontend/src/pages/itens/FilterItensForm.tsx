@@ -1,20 +1,26 @@
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
+import type { Item } from '../../interface/Item';
 
 // Definindo as props que o formulário recebe
 interface FilterFormProps {
     onAplicarFiltros: (filtros: object) => void;
+    itens: Item[];
 }
 
-const FilterItensForm = ({ onAplicarFiltros }: FilterFormProps) => {
-    // Estados locais para cada campo do formulário
+const FilterItensForm = ({ onAplicarFiltros, itens }: FilterFormProps) => {
     const [nome, setNome] = useState('');
     const [tipo, setTipo] = useState('');
     const [quantidade, setQuantidade] = useState('');
     const [operando, setOperando] = useState('');
 
+    const tiposUnicos = useMemo(() => {
+        if (!itens) return [];
+        const todosOsTipos = itens.map(item => item.Tipo_Item);
+        return [...new Set(todosOsTipos)];
+    }, [itens]);
+
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault(); // Impede o recarregamento da página
-        // Monta o objeto de filtros com os valores dos estados
         let filtros: { [key: string]: string | number } = {
             Nome: nome,
             Tipo: tipo
@@ -22,13 +28,11 @@ const FilterItensForm = ({ onAplicarFiltros }: FilterFormProps) => {
         if (quantidade) {
             filtros[operando] = Number(quantidade);
         }
-        // Chama a função do componente pai, passando os filtros
         onAplicarFiltros(filtros);
     };
 
     return (
         <form onSubmit={handleSubmit} className="space-y-4">
-            {/* Campo Nome */}
             <div>
                 <label htmlFor="nome" className="block text-sm font-medium text-gray-300">Item</label>
                 <input type="text" id="nome" value={nome} onChange={e => setNome(e.target.value)}
@@ -36,10 +40,12 @@ const FilterItensForm = ({ onAplicarFiltros }: FilterFormProps) => {
             </div>
             <div>
                 <label htmlFor="tipo" className="block text-sm font-medium text-gray-300">Tipo</label>
-                <input type="text" id="tipo" value={tipo} onChange={e => setTipo(e.target.value)}
-                    className="mt-1 block w-full bg-inputfield-100 border-none outline-none rounded-md py-2 px-3 text-white" />
+                <select id="tipo" value={tipo} onChange={e => setTipo(e.target.value)}
+                    className="mt-1 block w-full bg-inputfield-100 border-none outline-none rounded-md py-2 px-3 text-white">
+                    <option value="">Todos</option>
+                    {tiposUnicos.map(i => <option key={i!} value={i!}>{i!}</option>)}
+                </select>
             </div>
-
             <div>
                 <div className="flex items-center gap-2">
                     <label htmlFor="funcao" className="block text-sm font-medium text-gray-300">Quantidade</label>

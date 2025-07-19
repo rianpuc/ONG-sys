@@ -13,8 +13,6 @@ interface FilterFormProps {
 }
 
 const FilterEntregasForm = ({ onAplicarFiltros, eventos, receptores, itens }: FilterFormProps) => {
-    const [dataAntes, setDataAntes] = useState('');
-    const [dataDepois, setDataDepois] = useState('');
     const [operando, setOperando] = useState('');
     const [quantidade, setQuantidade] = useState('');
     const [eventoID, setEventoID] = useState('');
@@ -25,8 +23,6 @@ const FilterEntregasForm = ({ onAplicarFiltros, eventos, receptores, itens }: Fi
         e.preventDefault(); // Impede o recarregamento da página
         // Monta o objeto de filtros com os valores dos estados
         let filtros: { [key: string]: string | number } = {
-            antes: dataAntes,
-            depois: dataDepois,
             Evento: Number(eventoID),
             Receptor: receptorID,
             Item: Number(itemID)
@@ -40,18 +36,6 @@ const FilterEntregasForm = ({ onAplicarFiltros, eventos, receptores, itens }: Fi
 
     return (
         <form onSubmit={handleSubmit} className="space-y-4">
-            <div className="flex gap-4">
-                <div className="flex-1">
-                    <label htmlFor="dataDepois" className="block text-sm font-medium text-gray-300">A partir de:</label>
-                    <input type="date" id="dataDepois" value={dataDepois} onChange={e => setDataDepois(e.target.value)}
-                        className="mt-1 block w-full bg-inputfield-100 border-none outline-none rounded-md py-2 px-3 text-white" />
-                </div>
-                <div className="flex-1">
-                    <label htmlFor="dataAntes" className="block text-sm font-medium text-gray-300">Antes de:</label>
-                    <input type="date" id="dataAntes" value={dataAntes} onChange={e => setDataAntes(e.target.value)}
-                        className="mt-1 block w-full bg-inputfield-100 border-none outline-none rounded-md py-2 px-3 text-white" />
-                </div>
-            </div>
             <div>
                 <label htmlFor="evento" className="block text-sm font-medium text-gray-300">Evento</label>
                 <select id="evento" value={eventoID} onChange={e => setEventoID(e.target.value)}

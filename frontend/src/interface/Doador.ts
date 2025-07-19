@@ -4,4 +4,5 @@ export interface Doador {
     CNPJ?: string;
     Nome_Doador: string;
     Tipo_Doador: "Fisica" | "Juridica";
+    Status: boolean;
 }

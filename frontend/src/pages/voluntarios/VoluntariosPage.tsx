@@ -11,7 +11,7 @@ import InsertVoluntariosForm from "./InsertVoluntariosForm";
 import FilterVoluntariosForm from "./FilterVoluntariosForm";
 import UpdateVoluntariosForm from "./UpdateVoluntariosForm";
 import useMutation from "../../hooks/useMutation";
-import { PieChart, Pie, Tooltip, ResponsiveContainer, Cell } from 'recharts'
+import { PieChart, Pie, Tooltip, ResponsiveContainer, Cell, type SectorProps, Sector } from 'recharts'
 import { Bounce, ToastContainer, toast } from 'react-toastify';
 import DashboardLayout from "../../components/layout/DashboardLayout";
 import SimpleStatsCard from "../../components/card/SimpleStatsCard";
@@ -34,22 +34,9 @@ type PieSectorData = {
     paddingAngle?: number;
     dataKey?: string;
     payload?: any;
-    tooltipPayload?: ReadonlyArray<TooltipPayload>;
 };
 
-type GeometrySector = {
-    cx: number;
-    cy: number;
-    innerRadius: number;
-    outerRadius: number;
-    startAngle: number;
-    endAngle: number;
-};
-
-type PieLabelProps = PieSectorData &
-    GeometrySector & {
-        tooltipPayload?: any;
-    };
+type PieSectorDataItem = React.SVGProps<SVGPathElement> & Partial<SectorProps> & PieSectorData;
 
 const columns = [
     { header: 'Identificação', render: (voluntario: Voluntario) => { return formatIdentificacao(voluntario.CPF, "fisica") } },
@@ -58,33 +45,63 @@ const columns = [
     { header: 'Instituição', accessor: 'nomeInstituicao' as const }
 ]
 
-const RADIAN = Math.PI / 180;
-const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042'];
+const COLORS = ["#49de83", "#2852fb", "#742ede", "#f93e68"]
 
-const renderCustomizedLabel = ({ cx, cy, midAngle, innerRadius, outerRadius, percent }: PieLabelProps) => {
-    const radius = innerRadius + (outerRadius - innerRadius) * 0.5;
-    const x = cx + radius * Math.cos(-(midAngle ?? 0) * RADIAN);
-    const y = cy + radius * Math.sin(-(midAngle ?? 0) * RADIAN);
-
+const renderActiveShape = ({
+    cx,
+    cy,
+    midAngle,
+    innerRadius,
+    outerRadius,
+    startAngle,
+    endAngle,
+    fill,
+    payload,
+    percent,
+    value,
+}: PieSectorDataItem) => {
+    const RADIAN = Math.PI / 180;
+    const sin = Math.sin(-RADIAN * (midAngle ?? 1));
+    const cos = Math.cos(-RADIAN * (midAngle ?? 1));
+    const sx = (cx ?? 0) + ((outerRadius ?? 0) + 10) * cos;
+    const sy = (cy ?? 0) + ((outerRadius ?? 0) + 10) * sin;
+    const mx = (cx ?? 0) + ((outerRadius ?? 0) + 30) * cos;
+    const my = (cy ?? 0) + ((outerRadius ?? 0) + 30) * sin;
+    const ex = mx + (cos >= 0 ? 1 : -1) * 22;
+    const ey = my;
+    const textAnchor = cos >= 0 ? 'start' : 'end';
     return (
-        <text x={x} y={y} fill="white" textAnchor={x > cx ? 'start' : 'end'} dominantBaseline="central">
-            {`${((percent ?? 1) * 100).toFixed(0)}%`}
-        </text>
-    );
-};
-
-const CustomTooltip = ({ active, payload, label }: any) => {
-    console.log(payload);
-    const isVisible = active && payload && payload.length;
-    return (
-        <div className="bg-white/80 rounded-md p-4 text-black" style={{ visibility: isVisible ? 'visible' : 'hidden' }}>
-            {isVisible && (
-                <>
-                    <p className="">{`${payload[0].payload.nomeFuncao}`}</p>
-                    <p className="">Quantidade: {`${payload[0].value}`}</p>
-                </>
-            )}
-        </div>
+        <g>
+            <text x={cx} y={cy} dy={8} textAnchor="middle" fill="#FFF">
+                {payload.nomeFuncao}
+            </text>
+            <Sector
+                cx={cx}
+                cy={cy}
+                stroke="none"
+                innerRadius={innerRadius}
+                outerRadius={outerRadius}
+                startAngle={startAngle}
+                endAngle={endAngle}
+                fill={fill}
+            />
+            <Sector
+                cx={cx}
+                cy={cy}
+                stroke="none"
+                startAngle={startAngle}
+                endAngle={endAngle}
+                innerRadius={(outerRadius ?? 0) + 6}
+                outerRadius={(outerRadius ?? 0) + 10}
+                fill={fill}
+            />
+            <path d={`M${sx},${sy}L${mx},${my}L${ex},${ey}`} stroke={fill} fill="none" />
+            <circle cx={ex} cy={ey} r={2} fill={fill} stroke="none" />
+            <text x={ex + (cos >= 0 ? 1 : -1) * 12} y={ey} textAnchor={textAnchor} fill="#FFF">{`Qtd: ${value}`}</text>
+            <text x={ex + (cos >= 0 ? 1 : -1) * 12} y={ey} dy={18} textAnchor={textAnchor} fill="#999">
+                {`(${((percent ?? 1) * 100).toFixed(2)}%)`}
+            </text>
+        </g>
     );
 };
 
@@ -149,14 +166,14 @@ const VoluntariosPage = () => {
         <>
             <title>Voluntários</title>
             <Modal isOpen={modalAberto === 'inserir'} onClose={() => setModalAberto(null)} title="Adicionar Novo Voluntário">
-                <InsertVoluntariosForm instituicoes={instituicoes || []} onError={() => { toast.error("Falha ao criar voluntário") }}
+                <InsertVoluntariosForm voluntarios={voluntarios!} instituicoes={instituicoes || []} onError={() => { toast.error("Falha ao criar voluntário") }}
                     onSuccess={() => { setModalAberto(null); setRefetchTrigger(prev => prev + 1); toast.success("Voluntário cadastrado com sucesso!") }} />
             </Modal>
             <Modal isOpen={modalAberto === 'procurar'} onClose={() => setModalAberto(null)} title="Buscar Voluntários">
-                <FilterVoluntariosForm onAplicarFiltros={handleApplyFiltro} instituicoes={instituicoes || []} />
+                <FilterVoluntariosForm voluntarios={voluntarios!} onAplicarFiltros={handleApplyFiltro} instituicoes={instituicoes || []} />
             </Modal>
             <Modal isOpen={modalAberto === 'atualizar'} onClose={() => setModalAberto(null)} title="Atualizar Voluntário">
-                <UpdateVoluntariosForm selectedVoluntario={selectedVoluntario!} onError={() => { toast.error("Falha ao atualizar voluntário") }}
+                <UpdateVoluntariosForm voluntarios={voluntarios!} selectedVoluntario={selectedVoluntario!} onError={() => { toast.error("Falha ao atualizar voluntário") }}
                     onSuccess={() => {
                         setModalAberto(null); setRefetchTrigger(prev => prev + 1);
                         setSelectedVoluntario(null); toast.success("Voluntário atualizado com sucesso!")
@@ -167,7 +184,7 @@ const VoluntariosPage = () => {
                     <SimpleStatsCard titulo="Voluntários" valor={voluntarios?.length!} isLoading={isLoading} span={6}></SimpleStatsCard>
                     <div onClick={() => setModalAberto("voluntariosFuncao")} className={`bg-blue-500 rounded-lg p-6 col-span-6 row-span-6 flex flex-col items-start cursor-pointer`}>
                         <h1 className="text-2xl text-bolder">Voluntários por Função</h1>
-                        <span className="text-blue-200">clique para encontrar</span>
+                        <span className="text-blue-200">clique para visualizar</span>
                     </div>
                     <Button name="Criar" onClick={() => { setModalAberto('inserir'); }}>Inserir</Button>
                     {queryString.length > 0 ? <Button name="Procurar" onClick={() => setFiltrosAtivos({})}>Limpar filtros</Button> :
@@ -181,18 +198,19 @@ const VoluntariosPage = () => {
             </DashboardLayout>
             <Modal isOpen={modalAberto === 'voluntariosFuncao'} onClose={() => setModalAberto(null)} title="Voluntários por Função">
                 {stats?.voluntariosPorFuncao &&
-                    <div className="bg-gradientcontainer-100/20 border border-secondrow-100/20 rounded-md">
+                    <div className="bg-gradientcontainer-100/50 border border-secondrow-100/20 rounded-md">
                         <div className="rounded-md">
                             <ResponsiveContainer width="100%" height={400}>
                                 <PieChart width={400} height={400}>
-                                    <Tooltip content={CustomTooltip} />
                                     <Pie
                                         data={stats.voluntariosPorFuncao}
                                         cx="50%"
                                         cy="50%"
-                                        labelLine={false}
-                                        label={renderCustomizedLabel}
+                                        innerRadius={60}
                                         outerRadius={80}
+                                        activeShape={renderActiveShape}
+                                        fill="#20307D"
+                                        stroke="none"
                                         dataKey="quantidade"
                                     >
                                         {stats.voluntariosPorFuncao.map((entry, index) => (
