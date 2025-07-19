@@ -98,8 +98,13 @@ O repositório está organizado da seguinte forma:
 
 ## 📫 Contato
 
-**GitHub:** [rianpuc](https://github.com/rianpuc)
+### 👨‍💻 Rian Eduardo 
+- Desenvolvimento completo do site (Frontend, Backend, Docker, Banco de Dados)
+- Github: [rianpuc](https://github.com/rianpuc)
+- LinkedIn: [perfil](https://www.linkedin.com/in/riandll/)
+- E-mail: rianeduardotec@gmail.com
 
-**LinkedIn:** [perfil](https://www.linkedin.com/in/riandll/)
-
-**E-mail:** rianeduardotec@gmail.com
+### 🎨 Geovana Zamproni
+- Criação do design gráfico, wireframes e protótipos
+- LinkedIn: [perfil](https://www.linkedin.com/in/geovana-zamproni-3a53a82a8/)
+- Behance: [perfil](https://www.behance.net/geovanazamproni)
