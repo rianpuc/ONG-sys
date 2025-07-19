@@ -9,7 +9,7 @@ import org.springframework.data.repository.query.Param;
 
 public interface DoacaoRepository extends JpaRepository<Doacao, Integer>, JpaSpecificationExecutor<Doacao> {
 
-    @Query("SELECT COUNT(d) FROM Doacao d WHERE d.Data >= :inicio AND d.Data <= :fim")
+    @Query("SELECT COUNT(d) FROM Doacao d WHERE d.data >= :inicio AND d.data <= :fim AND d.Status = true")
     long countDoacoesEntreDatas(@Param("inicio") LocalDate inicio, @Param("fim") LocalDate fim);
 
 }

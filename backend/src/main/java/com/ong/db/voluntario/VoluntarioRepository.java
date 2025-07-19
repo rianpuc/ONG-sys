@@ -9,7 +9,7 @@ import org.springframework.data.jpa.repository.Query;
 import com.ong.db.stats.VoluntarioFuncDTO;
 
 public interface VoluntarioRepository extends JpaRepository<Voluntario, String>, JpaSpecificationExecutor<Voluntario> {
-    @Query("SELECT new com.ong.db.stats.VoluntarioFuncDTO(v.Funcao, COUNT(v.CPF)) FROM Voluntario v GROUP BY v.CPF")
+    @Query("SELECT new com.ong.db.stats.VoluntarioFuncDTO(v.Funcao, COUNT(v.Funcao)) FROM Voluntario v GROUP BY v.Funcao")
     List<VoluntarioFuncDTO> getVoluntariosPorFuncao();
 
 }

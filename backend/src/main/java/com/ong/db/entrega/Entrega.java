@@ -27,7 +27,7 @@ public class Entrega {
     @Column(name = "ID_Entrega")
     private Integer ID_Entrega;
     @Column(name = "Data_Entrega")
-    private LocalDate Data_Entrega;
+    private LocalDate data;
     @Column(name = "Status")
     private boolean Status;
     @ManyToOne

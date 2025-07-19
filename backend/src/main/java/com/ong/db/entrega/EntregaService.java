@@ -5,6 +5,7 @@ import java.util.List;
 
 import jakarta.persistence.criteria.Join;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -33,15 +34,9 @@ public class EntregaService {
     @Autowired
     private ItemEntregaRepository itemEntregaRepository;
 
-    public List<EntregaResponseDTO> getAll(LocalDate antes, LocalDate depois, Integer evento, String receptor,
+    public List<EntregaResponseDTO> getAll(Integer evento, String receptor,
             Integer item, Integer maiorQue, Integer menorQue, Integer igualA) {
         Specification<Entrega> spec = (root, query, cb) -> cb.conjunction();
-        if (antes != null) {
-            spec = spec.and(dataAntesDe(antes));
-        }
-        if (depois != null) {
-            spec = spec.and(dataDepoisDe(depois));
-        }
         if (evento != null) {
             spec = spec.and(temEvento(evento));
         }
@@ -61,7 +56,8 @@ public class EntregaService {
             spec = spec.and(quantidadeIgualA(igualA));
         }
         spec = spec.and(isAtivo(true));
-        List<EntregaResponseDTO> entregas = entregaRepository.findAll(spec).stream().map(EntregaResponseDTO::new)
+        List<EntregaResponseDTO> entregas = entregaRepository.findAll(spec, Sort.by(Sort.Direction.ASC, "data"))
+                .stream().map(EntregaResponseDTO::new)
                 .toList();
         return entregas;
     }
@@ -69,18 +65,21 @@ public class EntregaService {
     @Transactional
     public EntregaResponseDTO insert(EntregaRequestDTO dados) {
         Receptor receptor = receptorRepository.findById(dados.Receptor())
-                .orElseThrow(() -> new RuntimeException("Receptor nao encontrado!"));
+                .orElseThrow(() -> new RuntimeException("Receptor não encontrado!"));
         Entrega novaEntrega = new Entrega();
         novaEntrega.setReceptor(receptor);
         Evento evento = eventoRepository.findById(dados.Evento())
-                .orElseThrow(() -> new RuntimeException("Evento nao encontrado!"));
+                .orElseThrow(() -> new RuntimeException("Evento não encontrado!"));
         novaEntrega.setEvento(evento);
-        novaEntrega.setData_Entrega(dados.Data());
+        if (dados.Data().isAfter(LocalDate.now())) {
+            new RuntimeException("Não é possível registrar uma entrega para um evento que ainda não aconteceu!");
+        }
+        novaEntrega.setData(dados.Data());
         novaEntrega.setStatus(true);
         Entrega entregaSalva = entregaRepository.save(novaEntrega);
         for (ItemEntregaRequestDTO itemDTO : dados.itensEntregues()) {
             Item item = itemRepository.findById(itemDTO.ID_Item())
-                    .orElseThrow(() -> new RuntimeException("Item nao encontrado!"));
+                    .orElseThrow(() -> new RuntimeException("Item não encontrado!"));
             int estoqueAtual = item.getQuantidade_Atual();
             if (itemDTO.Quantidade() > estoqueAtual) {
                 throw new RuntimeException("Quantidade entregue maior que estoque!");
@@ -116,7 +115,7 @@ public class EntregaService {
                 .orElseThrow(() -> new RuntimeException("Receptor nao encontrado!"));
         Evento novoEvento = eventoRepository.findById(dados.Evento())
                 .orElseThrow(() -> new RuntimeException("Evento nao encontrado!"));
-        entrega.setData_Entrega(dados.Data());
+        entrega.setData(dados.Data());
         entrega.setReceptor(novoReceptor);
         entrega.setEvento(novoEvento);
         entrega.setStatus(true);
@@ -160,14 +159,6 @@ public class EntregaService {
 
     private static Specification<Entrega> isAtivo(boolean status) {
         return (root, query, cb) -> cb.equal(root.get("Status"), status);
-    }
-
-    private static Specification<Entrega> dataAntesDe(LocalDate date) {
-        return (root, query, cb) -> cb.lessThanOrEqualTo(root.get("Data_Entrega"), date);
-    }
-
-    private static Specification<Entrega> dataDepoisDe(LocalDate date) {
-        return (root, query, cb) -> cb.greaterThanOrEqualTo(root.get("Data_Entrega"), date);
     }
 
     private static Specification<Entrega> temEvento(Integer evento) {

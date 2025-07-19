@@ -11,7 +11,7 @@ public record EntregaResponseDTO(Integer ID_Entrega, LocalDate Data_Entrega, Eve
         ReceptorResponseDTO Receptor,
         List<ItemEntregaResponseDTO> itensEntregues) {
     public EntregaResponseDTO(Entrega entrega) {
-        this(entrega.getID_Entrega(), entrega.getData_Entrega(), new EventoResponseDTO(entrega.getEvento()),
+        this(entrega.getID_Entrega(), entrega.getData(), new EventoResponseDTO(entrega.getEvento()),
                 new ReceptorResponseDTO(entrega.getReceptor()),
                 entrega.getItens().stream().map(ItemEntregaResponseDTO::new).toList());
     }

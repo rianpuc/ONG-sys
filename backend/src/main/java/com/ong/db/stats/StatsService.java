@@ -3,7 +3,6 @@ package com.ong.db.stats;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
-import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -91,17 +90,17 @@ public class StatsService {
         LocalDate dataEventoPrincipal = null;
         String statusEvento = "";
         long dias = 0;
-        Optional<Evento> evento = eventoRepository.findTopByDataAfterOrderByDataAsc(hoje);
-        if (evento.isPresent()) {
-            Evento proxEvento = evento.get();
+        List<Evento> evento = eventoRepository.findTopByDataAfterOrderByDataAsc(hoje);
+        if (!evento.isEmpty()) {
+            Evento proxEvento = evento.get(0);
             localEventoPrincipal = proxEvento.getLocal();
             dataEventoPrincipal = proxEvento.getData();
             statusEvento = "PROXIMO";
             dias = ChronoUnit.DAYS.between(hoje, dataEventoPrincipal);
         } else {
-            Optional<Evento> ultimoEventoOpt = eventoRepository.findTopByDataBeforeOrderByDataDesc(hoje);
-            if (ultimoEventoOpt.isPresent()) {
-                Evento ultimoEvento = ultimoEventoOpt.get();
+            List<Evento> ultimoEventoList = eventoRepository.findTopByDataBeforeOrderByDataDesc(hoje);
+            if (!ultimoEventoList.isEmpty()) {
+                Evento ultimoEvento = ultimoEventoList.get(0);
                 localEventoPrincipal = ultimoEvento.getLocal();
                 dataEventoPrincipal = ultimoEvento.getData();
                 statusEvento = "ULTIMO";
@@ -114,9 +113,9 @@ public class StatsService {
             }
         }
         long totalItensEvento = 0;
-        Optional<Evento> ultimoEvento = eventoRepository.findTopByDataBeforeOrderByDataDesc(hoje);
-        if (ultimoEvento.isPresent()) {
-            totalItensEvento = itemEntregaRepository.sumQuantidadeByEventoId(ultimoEvento.get().getID_Evento());
+        List<Evento> ultimoEvento = eventoRepository.findTopByDataBeforeOrderByDataDesc(hoje);
+        if (!ultimoEvento.isEmpty()) {
+            totalItensEvento = itemEntregaRepository.sumQuantidadeByEventoId(ultimoEvento.get(0).getID_Evento());
         }
         EventoStatsResponseDTO eventoStats = new EventoStatsResponseDTO(localEventoPrincipal, dataEventoPrincipal,
                 statusEvento, dias, totalItensEvento);

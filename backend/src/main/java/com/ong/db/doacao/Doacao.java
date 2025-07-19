@@ -26,7 +26,7 @@ public class Doacao {
     @Column(name = "ID_Doacao")
     private int ID;
     @Column(name = "Data")
-    private LocalDate Data;
+    private LocalDate data;
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "Doador")
     private Doador Doador;

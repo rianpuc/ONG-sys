@@ -28,7 +28,7 @@ interface EntregaOption {
 // Definindo as props que o formulário recebe
 interface UpdateFormProps {
     onSuccess: () => void;
-    onError: () => void;
+    onError: (msg: string) => void;
     onWarn: (mensagem: string) => void;
     onEventoCreated: () => void;
     onReceptorCreated: () => void;
@@ -100,7 +100,7 @@ const UpdateEntregasForm = ({ onSuccess, onError, onWarn, onEventoCreated, onRec
             await criarEntrega(novaEntrega, selectedEntrega.ID_Entrega);
             onSuccess();
         } catch (err) {
-            onError();
+            onError(String(err));
             console.error(err);
         }
     };
@@ -234,13 +234,13 @@ const UpdateEntregasForm = ({ onSuccess, onError, onWarn, onEventoCreated, onRec
                 </div>
             </form>
             <Modal title="Cadastrar Novo Evento" isOpen={subModalAberto === 'novoEvento'} onClose={() => setSubModalAberto(null)}>
-                <InsertEventosForm instituicoes={instituicoes!} name={reutilizar} onSuccess={() => { onEventoCreated(); setSubModalAberto(null); }} />
+                <InsertEventosForm onError={() => onError("Falha ao criar evento")} instituicoes={instituicoes!} name={reutilizar} onSuccess={() => { onEventoCreated(); setSubModalAberto(null); }} />
             </Modal>
             <Modal title="Cadastrar Novo Receptor" isOpen={subModalAberto === 'novoReceptor'} onClose={() => setSubModalAberto(null)}>
-                <InsertReceptoresForm name={reutilizar} onSuccess={() => { onReceptorCreated(); setSubModalAberto(null); }} />
+                <InsertReceptoresForm onError={() => onError("Falha ao criar receptor")} name={reutilizar} onSuccess={() => { onReceptorCreated(); setSubModalAberto(null); }} />
             </Modal>
             <Modal title="Cadastrar Novo Item" isOpen={subModalAberto === 'novoItem'} onClose={() => setSubModalAberto(null)}>
-                <InsertItensForm name={reutilizar} quantity={true} onSuccess={() => { onItemCreated(); setSubModalAberto(null); }} />
+                <InsertItensForm itens={itens!} onError={() => onError("Falha ao criar item")} name={reutilizar} quantity={true} onSuccess={() => { onItemCreated(); setSubModalAberto(null); }} />
             </Modal>
 
         </>

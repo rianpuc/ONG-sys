@@ -4,6 +4,7 @@ import java.time.LocalDate;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Service;
@@ -57,7 +58,8 @@ public class DoacaoService {
             spec = spec.and(quantidadeIgualA(igualA));
         }
         spec = spec.and(isAtivo(true));
-        List<DoacaoResponseDTO> doacoes = doacaoRepository.findAll(spec).stream().map(DoacaoResponseDTO::new).toList();
+        List<DoacaoResponseDTO> doacoes = doacaoRepository.findAll(spec, Sort.by(Sort.Direction.ASC, "data")).stream()
+                .map(DoacaoResponseDTO::new).toList();
         return doacoes;
     }
 
@@ -140,11 +142,11 @@ public class DoacaoService {
     }
 
     Specification<Doacao> dataAntesDe(LocalDate date) {
-        return (root, query, cb) -> cb.lessThanOrEqualTo(root.get("Data"), date);
+        return (root, query, cb) -> cb.lessThanOrEqualTo(root.get("data"), date);
     }
 
     Specification<Doacao> dataDepoisDe(LocalDate date) {
-        return (root, query, cb) -> cb.greaterThanOrEqualTo(root.get("Data"), date);
+        return (root, query, cb) -> cb.greaterThanOrEqualTo(root.get("data"), date);
     }
 
     Specification<Doacao> doadorIgual(Integer doador) {

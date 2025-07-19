@@ -4,9 +4,11 @@ import java.util.List;
 import java.time.LocalDate;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
+import com.mysql.cj.x.protobuf.MysqlxCrud.Order;
 import com.ong.db.instituicao.Instituicao;
 import com.ong.db.instituicao.InstituicaoRepository;
 
@@ -29,7 +31,8 @@ public class EventoService {
             spec = spec.and(temOrganizador(cnpj));
         }
         spec = spec.and(isAtivo(true));
-        List<EventoResponseDTO> eventos = repository.findAll(spec).stream().map(EventoResponseDTO::new).toList();
+        List<EventoResponseDTO> eventos = repository.findAll(spec, Sort.by(Sort.Direction.ASC, "data")).stream()
+                .map(EventoResponseDTO::new).toList();
         return eventos;
     }
 
@@ -70,7 +73,7 @@ public class EventoService {
     }
 
     private static Specification<Evento> temData(LocalDate data) {
-        return (root, query, cb) -> cb.equal(root.get("Data"), data);
+        return (root, query, cb) -> cb.equal(root.get("data"), data);
     }
 
     private static Specification<Evento> temOrganizador(String cnpj) {

@@ -11,10 +11,10 @@ import org.springframework.data.repository.query.Param;
 import com.ong.db.stats.ReceptorAusenteDTO;
 
 public interface ReceptorRepository extends JpaRepository<Receptor, String>, JpaSpecificationExecutor<Receptor> {
-    @Query("SELECT COUNT(r.CPF) FROM Receptor r WHERE r.Criado BETWEEN :inicio AND :fim")
+    @Query("SELECT COUNT(r.CPF) FROM Receptor r WHERE r.Criado BETWEEN :inicio AND :fim AND r.Status = true")
     long getReceptoresCriadosEntreDatas(@Param("inicio") LocalDate inicio, @Param("fim") LocalDate fim);
 
-    @Query("SELECT new com.ong.db.stats.ReceptorAusenteDTO(r.Nome, r.CPF) FROM Receptor r WHERE r.CPF NOT IN (SELECT en.Receptor.CPF FROM Entrega en JOIN Evento e ON e.ID_Evento = en.Evento.ID_Evento WHERE e.Data = (SELECT MAX(Data) FROM Evento WHERE Data < :hoje))")
+    @Query("SELECT new com.ong.db.stats.ReceptorAusenteDTO(r.Nome, r.CPF) FROM Receptor r WHERE r.CPF NOT IN (SELECT en.Receptor.CPF FROM Entrega en JOIN Evento e ON e.ID_Evento = en.Evento.ID_Evento WHERE e.data = (SELECT MAX(data) FROM Evento WHERE data < :hoje)) AND r.Status = true")
     List<ReceptorAusenteDTO> getReceptoresAusentes(@Param("hoje") LocalDate hoje);
 
 }

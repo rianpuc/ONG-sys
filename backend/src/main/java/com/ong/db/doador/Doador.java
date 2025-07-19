@@ -38,4 +38,8 @@ public class Doador {
     private boolean Ativo;
     @Column(name = "Criado")
     private LocalDate Criado;
+
+    public boolean getAtivo() {
+        return this.Ativo;
+    }
 }

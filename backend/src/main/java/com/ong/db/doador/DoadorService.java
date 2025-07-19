@@ -66,10 +66,27 @@ public class DoadorService {
 
     public DoadorResponseDTO update(Integer ID, DoadorRequestDTO dados) {
         Doador doador = repository.findById(ID).orElseThrow(() -> new RuntimeException("Doador não encontrado!"));
-        doador.setCPF(dados.CPF());
-        doador.setCNPJ(dados.CNPJ());
-        doador.setNome_Doador(dados.Nome_Doador());
+        if ("Fisica".equalsIgnoreCase(dados.Tipo_Doador())) {
+            if (dados.CPF() == null || dados.CPF().trim().isEmpty() || dados.CPF().length() > 11) {
+                throw new IllegalArgumentException("CPF inválido para doador Pessoa Fisica.");
+            }
+            if (repository.existsByCPF(dados.CPF())) {
+                throw new IllegalArgumentException("Um doador com este CPF já existe.");
+            }
+            doador.setCPF(dados.CPF());
+            doador.setCNPJ(null);
+        } else {
+            if (dados.CNPJ() == null || dados.CNPJ().trim().isEmpty() || dados.CNPJ().length() > 14) {
+                throw new IllegalArgumentException("CNPJ inválido para doador Pessoa Juridica.");
+            }
+            if (repository.existsByCNPJ(dados.CNPJ())) {
+                throw new IllegalStateException("Um doador com este CNPJ já existe.");
+            }
+            doador.setCPF(null);
+            doador.setCNPJ(dados.CNPJ());
+        }
         doador.setTipo_Doador(dados.Tipo_Doador());
+        doador.setNome_Doador(dados.Nome_Doador());
         Doador novoDoador = repository.save(doador);
         return new DoadorResponseDTO(novoDoador);
     }

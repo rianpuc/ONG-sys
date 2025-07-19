@@ -8,6 +8,6 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 public interface EntregaRepository extends JpaRepository<Entrega, Integer>, JpaSpecificationExecutor<Entrega> {
-    @Query("SELECT COUNT(e) FROM Entrega e WHERE e.Data_Entrega >= :inicio AND e.Data_Entrega <= :fim")
+    @Query("SELECT COUNT(e) FROM Entrega e WHERE e.data >= :inicio AND e.data <= :fim AND e.Status = true")
     long countEntregasEntreDatas(@Param("inicio") LocalDate inicio, @Param("fim") LocalDate fim);
 }

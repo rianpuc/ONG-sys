@@ -32,7 +32,7 @@ public class Evento {
     @Column(name = "Local")
     private String Local;
     @Column(name = "Data")
-    private LocalDate Data;
+    private LocalDate data;
     @ManyToOne
     @JoinColumn(name = "Instituicao")
     private Instituicao Instituicao;

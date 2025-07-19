@@ -135,7 +135,7 @@ const EntregasPage = () => {
             </Modal>
             <Modal isOpen={modalAberto === 'atualizar'} onClose={() => setModalAberto(null)} title="Atualizar Entrega">
                 <UpdateEntregasForm eventos={eventos!} receptores={receptores!} itens={itens!} selectedEntrega={selectedEntrega!} onEventoCreated={handleEventoCreated}
-                    onError={() => { toast.error("Falha ao atualizar entrega") }} onWarn={(mensagem) => { toast.warn(mensagem) }}
+                    onError={(msg) => { toast.error("Falha ao atualizar entrega: " + msg) }} onWarn={(mensagem) => { toast.warn(mensagem) }}
                     onReceptorCreated={handleReceptorCreated} onItemCreated={handleItemCreated} onSuccess={() => { setModalAberto(null); setRefetchTrigger(prev => prev + 1); toast.success("Entrega atualizada com sucesso!") }} />
             </Modal>
             <DashboardLayout>

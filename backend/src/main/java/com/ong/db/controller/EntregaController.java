@@ -29,15 +29,13 @@ public class EntregaController {
     @CrossOrigin(origins = "*", allowedHeaders = "*")
     @GetMapping
     public List<EntregaResponseDTO> getAll(
-            @RequestParam(name = "antes", required = false) LocalDate antes,
-            @RequestParam(name = "depois", required = false) LocalDate depois,
             @RequestParam(name = "Evento", required = false) Integer evento,
             @RequestParam(name = "Receptor", required = false) String receptor,
             @RequestParam(name = "Item", required = false) Integer item,
             @RequestParam(name = "maiorQue", required = false) Integer maiorQue,
             @RequestParam(name = "menorQue", required = false) Integer menorQue,
             @RequestParam(name = "igualA", required = false) Integer igualA) {
-        return service.getAll(antes, depois, evento, receptor, item, maiorQue, menorQue, igualA);
+        return service.getAll(evento, receptor, item, maiorQue, menorQue, igualA);
     }
 
     @CrossOrigin(origins = "*", allowedHeaders = "*")

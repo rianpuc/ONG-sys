@@ -10,6 +10,6 @@ import com.ong.db.stats.TopItemDTO;
 
 public interface ItemRepository extends JpaRepository<Item, Integer>, JpaSpecificationExecutor<Item> {
 
-    @Query("SELECT i.Nome_Item, i.Quantidade_Atual FROM Item i GROUP BY i.ID_Item HAVING i.Quantidade_Atual = (SELECT MIN(i2.Quantidade_Atual) FROM Item i2)")
+    @Query("SELECT i.Nome_Item, i.Quantidade_Atual FROM Item i WHERE i.Status = true GROUP BY i.ID_Item HAVING i.Quantidade_Atual = (SELECT MIN(i2.Quantidade_Atual) FROM Item i2 WHERE i2.Status = true)")
     List<TopItemDTO> menoresItensEmEstoque();
 }

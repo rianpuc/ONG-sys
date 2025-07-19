@@ -239,7 +239,7 @@ const InsertEntregasForm = ({ onSuccess, onError, onWarn, onEventoCreated, onRec
                 <InsertReceptoresForm onError={() => onError("Falha ao criar receptor")} name={reutilizar} onSuccess={() => { onReceptorCreated(); setSubModalAberto(null); }} />
             </Modal>
             <Modal title="Cadastrar Novo Item" isOpen={subModalAberto === 'novoItem'} onClose={() => setSubModalAberto(null)}>
-                <InsertItensForm onError={() => onError("Falha ao criar item")} name={reutilizar} quantity={true} onSuccess={() => { onItemCreated(); setSubModalAberto(null); }} />
+                <InsertItensForm itens={itens!} onError={() => onError("Falha ao criar item")} name={reutilizar} quantity={true} onSuccess={() => { onItemCreated(); setSubModalAberto(null); }} />
             </Modal>
 
         </>

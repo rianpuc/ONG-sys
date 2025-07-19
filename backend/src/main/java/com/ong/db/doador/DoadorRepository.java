@@ -15,7 +15,7 @@ public interface DoadorRepository extends JpaRepository<Doador, Integer>, JpaSpe
 
     boolean existsByCNPJ(String CNPJ);
 
-    @Query("SELECT COUNT(d) FROM Doador d WHERE d.Criado >= :inicio AND d.Criado <= :fim")
+    @Query("SELECT COUNT(d) FROM Doador d WHERE d.Criado >= :inicio AND d.Criado <= :fim AND d.Ativo = true")
     long countDoadoresEntreDatas(@Param("inicio") LocalDate inicio, @Param("fim") LocalDate fim);
 
     @Query("SELECT new com.ong.db.stats.DoadorTipoCount(d.Tipo_Doador, COUNT(d)) " +
