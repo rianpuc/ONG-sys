@@ -15,6 +15,7 @@ Uma aplicação web full-stack para gerenciamento de ONGs, construída com React
 - Criação do design gráfico, wireframes e protótipos
 - LinkedIn: [perfil](https://www.linkedin.com/in/geovana-zamproni-3a53a82a8/)
 - Behance: [perfil](https://www.behance.net/geovanazamproni)
+- E-mail: zampronigeovana@gmail.com
 
 ## 📄 Sobre o Projeto
 
