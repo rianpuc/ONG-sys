@@ -54,7 +54,7 @@ Graças ao Docker, rodar este projeto é incrivelmente simples.
 
 Após a conclusão do comando acima, a aplicação estará no ar!
 - Frontend (Site): http://localhost:5173
-- Backend (API): http://localhost:8080/api
+- Backend (API): http://localhost:8080
 Banco de Dados (para acesso via Workbench):
 - Host: localhost
 - Porta: 3305
